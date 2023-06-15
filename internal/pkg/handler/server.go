@@ -11,16 +11,19 @@ import (
 )
 
 type Server struct {
-	httpServer *http.Server
+	app *App
 }
 
-func (s *Server) Run(ctx context.Context, port string, handler http.Handler) error {
-	s.httpServer = &http.Server{
-		Addr:           ":" + port,
-		Handler:        handler,
-		MaxHeaderBytes: 1 << 20,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
+func Run(ctx context.Context, app *App, addr string) error {
+	srv := &Server{
+		app: app,
+	}
+
+	httpServer := &http.Server{
+		Addr:         addr,
+		Handler:      srv.InitRoutes(),
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	shutdownErrorChan := make(chan error)
@@ -33,11 +36,11 @@ func (s *Server) Run(ctx context.Context, port string, handler http.Handler) err
 		ctxTimeout, cancel := context.WithTimeout(ctx, 10*time.Second)
 		defer cancel()
 
-		shutdownErrorChan <- s.httpServer.Shutdown(ctxTimeout)
+		shutdownErrorChan <- httpServer.Shutdown(ctxTimeout)
 	}()
 
-	err := s.httpServer.ListenAndServe()
-	if errors.Is(err, http.ErrServerClosed) {
+	err := httpServer.ListenAndServe()
+	if !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
 
