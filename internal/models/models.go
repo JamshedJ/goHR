@@ -1,34 +1,65 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"errors"
+)
 
 type Employee struct {
-	ID           uint    `json:"id" gorm:"primaryKey"`
-	FirstName    string  `json:"first_name"`
-	LastName     string  `json:"last_name"`
-	Email        string  `json:"email"`
-	Address      string  `json:"address"`
-	Salary       float64 `json:"salary"`
-	Position     string  `json:"position"`
-	VocationDay  int     `json:"vocation_day"`
-	DepartmentID uint    `json:"department_id"`
-	Department   Department
+	ID             int     `json:"id"`
+	FirstName      string  `json:"first_name"`
+	LastName       string  `json:"last_name"`
+	Position       string  `json:"position"`
+	Department     string  `json:"department"`
+	EmploymentDate string  `json:"employment_date"`
+	Salary         float64 `json:"salary"`
 }
 
 type Department struct {
-	ID             uint   `json:"id" gorm:"primaryKey"`
-	DepartmentName string `json:"department_name"`
+	ID             int    `json:"id"`
+	Title          string `json:"title"`
+	DepartmentHead string `json:"department_head"`
 }
 
-type Vacancy struct {
-	gorm.Model
-	Title        string `json:"title" gorm:"size:128;not null"`
-	Description  string `json:"description" gorm:"size:256"`
-	Requirements string `json:"requirements" gorm:"size:256"`
+type Position struct {
+	ID            int     `json:"id"`
+	Title         string  `json:"title"`
+	Salary        float64 `json:"salary"`
+	Qualification string  `json:"qualification"`
 }
 
-type Users struct {
-	ID       uint   `json:"id,omitempty" gorm:"primaryKey"`
-	Username string `json:"username,omitempty" gorm:"unique;size:32;not null"`
-	Password string `json:"password,omitempty" gorm:"size:128;not null;->:false;<-"`
+type VacationRequest struct {
+	ID         int    `json:"id"`
+	EmployeeID int    `json:"employee_id"`
+	StartDate  string `json:"start_date"`
+	EndDate    string `json:"end_date"`
+	Reason     string `json:"reason"`
 }
+
+type SickLeaveRequest struct {
+	ID         int    `json:"id"`
+	EmployeeID int    `json:"employee_id"`
+	StartDate  string `json:"start_date"`
+	EndDate    string `json:"end_date"`
+	Reason     string `json:"reason"`
+}
+
+type User struct {
+	ID       uint   `json:"id,omitempty"`
+	Username string `json:"username,omitempty"`
+	Password string `json:"password,omitempty"`
+	Role     string `json:"role"`
+}
+
+var ErrNoRows = errors.New("no rows in result set")
+var ErrDuplicate = errors.New("duplicate")
+var ErrBadRequest = errors.New("bad request")
+var ErrUnauthorized = errors.New("unauthorized")
+
+var (
+	OK           = map[string]string{"message": "success"}
+	NotFound     = map[string]string{"message": "not found"}
+	Duplicate    = map[string]string{"message": "duplicate"}
+	BadRequest   = map[string]string{"message": "bad request"}
+	InternalErr  = map[string]string{"message": "internal server error"}
+	Unauthorized = map[string]string{"message": "unauthorized"}
+)

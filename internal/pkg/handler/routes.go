@@ -1,19 +1,10 @@
 package handler
 
 import (
-	"github.com/JamshedJ/goHR/pkg/service"
 	"github.com/gin-gonic/gin"
 )
 
-type Handler struct {
-	services *service.Service
-}
-
-func NewHandler(services *service.Service) *Handler {
-	return &Handler{services: services}
-}
-
-func (h *Handler) InitRoutes() *gin.Engine {
+func (s *Server) InitRoutes() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 
@@ -41,21 +32,39 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		department.DELETE("/:id")
 	}
 
-	vacancy := router.Group("/vacancy")
+	position := router.Group("/position")
 	{
-		vacancy.POST("/")
-		vacancy.GET("/")
-		vacancy.GET("/:id")
-		vacancy.PUT("/:id")
-		vacancy.DELETE("/:id")
+		position.POST("/")
+		position.GET("/")
+		position.GET("/:id")
+		position.PUT("/:id")
+		position.DELETE("/:id")
 	}
 
-	users := router.Group("/users")
+	vacationRequest := router.Group("/vacationRequest")
 	{
-		users.GET("/:id")
-		users.GET("/")
-		users.PUT("/")
-		users.DELETE("/")
+		vacationRequest.POST("/")
+		vacationRequest.GET("/")
+		vacationRequest.GET("/:id")
+		vacationRequest.PUT("/:id")
+		vacationRequest.DELETE("/:id")
+	}
+
+	sickLeaveRequest := router.Group("/sickLeaveRequest")
+	{
+		sickLeaveRequest.POST("/")
+		sickLeaveRequest.GET("/")
+		sickLeaveRequest.GET("/:id")
+		sickLeaveRequest.PUT("/:id")
+		sickLeaveRequest.DELETE("/:id")
+	}
+
+	user := router.Group("/user")
+	{
+		user.GET("/:id")
+		user.GET("/")
+		user.PUT("/")
+		user.DELETE("/")
 	}
 
 	return router
