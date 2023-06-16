@@ -2,6 +2,9 @@ package models
 
 import (
 	"errors"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type Employee struct {
@@ -63,3 +66,34 @@ var (
 	InternalErr  = map[string]string{"message": "internal server error"}
 	Unauthorized = map[string]string{"message": "unauthorized"}
 )
+
+func ReplyError(c *gin.Context, err error) {
+	switch err {
+	case ErrUnauthorized:
+		c.JSON(http.StatusUnauthorized, Unauthorized)
+	case ErrBadRequest:
+		c.JSON(http.StatusBadRequest, BadRequest)
+	case ErrNoRows:
+		c.JSON(http.StatusNotFound, NotFound)
+	case ErrDuplicate:
+		c.JSON(http.StatusNotAcceptable, Duplicate)
+	default:
+		c.JSON(http.StatusInternalServerError, InternalErr)
+	}
+	return
+}
+
+func (u *User) Validate() bool {
+	if len(u.Username) < 3 || len(u.Username) > 128 {
+		return false
+	}
+	if len(u.Password) < 4 || len(u.Password) > 32 {
+		return false
+	}
+	return true
+}
+
+type JWTClaims struct {
+	jwt.StandardClaims
+	UserID int `json:"user_id"`
+}

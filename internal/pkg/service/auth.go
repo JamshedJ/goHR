@@ -1,0 +1,64 @@
+package service
+
+import (
+	"context"
+	"crypto/sha256"
+	"fmt"
+	"github.com/JamshedJ/goHR/internal/models"
+	"github.com/dgrijalva/jwt-go"
+	"log"
+	"time"
+)
+
+const (
+	salt       = "hjqrhjqw124617ajfhajs"
+	signingKey = "qrkjk#4#%35FSFJlja#4353KSFjH"
+	tokenTTL   = 12 * time.Hour
+)
+
+func (a *App) GenerateToken(ctx context.Context, u models.User) (string, error) {
+	if !u.Validate() {
+		return "", models.ErrBadRequest
+	}
+	u.Password = generatePasswordHash(u.Password)
+	userID, err := a.db.AuthenticateUser(ctx, u)
+	if err != nil {
+		if err == models.ErrNoRows {
+			return "", models.ErrUnauthorized
+		}
+		log.Println("GenerateToken a.db.AuthenticateUser", err)
+		return "", err
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &models.JWTClaims{
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+		UserID: userID,
+	})
+
+	return token.SignedString([]byte(signingKey))
+}
+
+func (a *App) ParseToken(jwtString string) (int, error) {
+	claims := new(models.JWTClaims)
+	token, err := jwt.ParseWithClaims(jwtString, claims, func(token *jwt.Token) (interface{}, error) {
+		if sm, ok := token.Method.(*jwt.SigningMethodHMAC); !ok || sm.Name != "HS256" {
+			log.Println("app ParseToken jwt.ParseWithClaims incorrect signing method", sm.Name)
+			return nil, models.ErrUnauthorized
+		}
+		return []byte(signingKey), nil
+	})
+	if err != nil || !token.Valid {
+		return 0, models.ErrUnauthorized
+	}
+	return claims.UserID, nil
+}
+
+func generatePasswordHash(password string) string {
+	hash := sha256.New()
+	hash.Write([]byte(password))
+
+	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
+}

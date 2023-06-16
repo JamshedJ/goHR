@@ -3,7 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
-	"github.com/JamshedJ/goHR"
+	"github.com/JamshedJ/goHR/internal/pkg/service"
 	"net/http"
 	"os"
 	"os/signal"
@@ -12,10 +12,10 @@ import (
 )
 
 type Server struct {
-	app *goHR.App
+	app *service.App
 }
 
-func Run(ctx context.Context, app *goHR.App, addr string) error {
+func Run(ctx context.Context, app *service.App, addr string) error {
 	srv := &Server{
 		app: app,
 	}

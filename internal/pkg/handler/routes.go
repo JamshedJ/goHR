@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/JamshedJ/goHR/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,8 +11,8 @@ func (s *Server) InitRoutes() *gin.Engine {
 
 	auth := router.Group("/auth")
 	{
-		auth.POST("/sign-up")
-		auth.POST("/sign-in")
+		auth.POST("/sign-up", s.signUp)
+		auth.POST("/sign-in", s.signIn)
 	}
 
 	employee := router.Group("/employee")
@@ -59,12 +60,12 @@ func (s *Server) InitRoutes() *gin.Engine {
 		sickLeaveRequest.DELETE("/:id")
 	}
 
-	user := router.Group("/user")
+	user := router.Group("/user", middleware.MwGetID)
 	{
-		user.GET("/:id")
-		user.GET("/")
-		user.PUT("/")
-		user.DELETE("/")
+		user.GET("/:id", s.getUserById)
+		user.GET("/", s.getAllUsers)
+		user.PUT("/", s.updateUser)
+		user.DELETE("/", s.deleteUser)
 	}
 
 	return router
