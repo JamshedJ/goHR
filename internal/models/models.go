@@ -11,8 +11,8 @@ type Employee struct {
 	ID             int     `json:"id"`
 	FirstName      string  `json:"first_name"`
 	LastName       string  `json:"last_name"`
-	Position       string  `json:"position"`
-	Department     string  `json:"department"`
+	PositionID     int     `json:"position_id"`
+	DepartmentID   int     `json:"department_id"`
 	EmploymentDate string  `json:"employment_date"`
 	Salary         float64 `json:"salary"`
 }
@@ -50,7 +50,7 @@ type User struct {
 	ID       uint   `json:"id,omitempty"`
 	Username string `json:"username,omitempty"`
 	Password string `json:"password,omitempty"`
-	Role     string `json:"role"`
+	Role     string `json:"role,omitempty"`
 }
 
 var ErrNoRows = errors.New("no rows in result set")
@@ -81,6 +81,19 @@ func ReplyError(c *gin.Context, err error) {
 		c.JSON(http.StatusInternalServerError, InternalErr)
 	}
 	return
+}
+
+func (e *Employee) Validate() bool {
+	if e.ID <= 0 {
+		return false
+	}
+	if len(e.FirstName) < 3 || len(e.FirstName) > 128 {
+		return false
+	}
+	if len(e.LastName) < 3 || len(e.LastName) > 128 {
+		return false
+	}
+	return true
 }
 
 func (u *User) Validate() bool {
