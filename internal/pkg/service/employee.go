@@ -17,11 +17,11 @@ func (a *App) CreateEmployee(ctx context.Context, e models.Employee) (id int, er
 	return
 }
 
-func (a *App) GetEmployeeByID(ctx context.Context, id, positionID, departmentID int) (employee models.Employee, err error) {
+func (a *App) GetEmployeeByID(ctx context.Context, id int) (employee models.Employee, err error) {
 	if id <= 0 {
 		return employee, models.ErrBadRequest
 	}
-	employee, err = a.db.GetEmployeeByID(ctx, id, positionID, departmentID)
+	employee, err = a.db.GetEmployeeByID(ctx, id)
 	if err != nil && err != models.ErrNoRows {
 		log.Println("app GetEmployeeByID", err)
 	}

@@ -15,7 +15,7 @@ func (d *DB) CreateEmployee(ctx context.Context, e models.Employee) (id int, err
 	return
 }
 
-func (d *DB) GetEmployeeByID(ctx context.Context, id, PositionID, DepartmentID int) (employee models.Employee, err error) {
+func (d *DB) GetEmployeeByID(ctx context.Context, id int) (employee models.Employee, err error) {
 	if err = d.conn.QueryRow(ctx,
 		`SELECT
 			id,
@@ -26,7 +26,7 @@ func (d *DB) GetEmployeeByID(ctx context.Context, id, PositionID, DepartmentID i
 			employment_date,
 			salary
 		FROM employees
-		WHERE id = $1 AND position_id = $2 AND department_id = $3;`, id, PositionID, DepartmentID).Scan(
+		WHERE id = $1;`, id).Scan(
 		&employee.ID,
 		&employee.FirstName,
 		&employee.LastName,

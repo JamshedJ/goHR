@@ -84,9 +84,9 @@ func ReplyError(c *gin.Context, err error) {
 }
 
 func (e *Employee) Validate() bool {
-	if e.ID <= 0 {
-		return false
-	}
+	// if e.ID <= 0 {
+	// 	return false
+	// }
 	if len(e.FirstName) < 3 || len(e.FirstName) > 128 {
 		return false
 	}

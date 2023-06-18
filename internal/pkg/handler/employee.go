@@ -26,9 +26,7 @@ func (s *Server) createEmployee(c *gin.Context) {
 
 func (s *Server) getEmployeeByID(c *gin.Context) {
 	id := c.GetInt("id")
-	positionID := c.GetInt("position_id")
-	departmentID := c.GetInt("department_id")
-	employee, err := s.app.GetEmployeeByID(c.Request.Context(), id, positionID, departmentID)
+	employee, err := s.app.GetEmployeeByID(c.Request.Context(), id)
 	if err != nil {
 		models.ReplyError(c, err)
 		return
