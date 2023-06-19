@@ -1,53 +1,87 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/JamshedJ/goHR/internal/models"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
-func (s *Server) getUserById(c *gin.Context) {
-	id := c.GetInt("id")
-	userID := c.GetInt("user_id")
-	user, err := s.app.GetUserById(c.Request.Context(), id, userID)
+func (s *server) getUserById(c *gin.Context) {
+	u, err := getUserFromContext(c)
 	if err != nil {
-		models.ReplyError(c, err)
+		replyError(c, err)
+		return
+	}
+	id, err := getParamInt(c, "id")
+	if err != nil {
+		replyError(c, err)
+		return
+	}
+
+	user, err := s.app.GetUserById(c.Request.Context(), u, id)
+	if err != nil {
+		replyError(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, user)
 }
 
-func (s *Server) getAllUsers(c *gin.Context) {
-	users, err := s.app.GetAllUsers(c.Request.Context())
+func (s *server) getAllUsers(c *gin.Context) {
+	u, err := getUserFromContext(c)
 	if err != nil {
-		models.ReplyError(c, err)
+		replyError(c, err)
+		return
+	}
+	users, err := s.app.GetAllUsers(c.Request.Context(), u)
+	if err != nil {
+		replyError(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, users)
 }
 
-func (s *Server) updateUser(c *gin.Context) {
-	id := c.GetInt("id")
-	userID := c.GetInt("user_id")
-	var u models.User
-	if err := c.BindJSON(&u); err != nil {
+func (s *server) updateUser(c *gin.Context) {
+	var user models.User
+	err := c.BindJSON(&user)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, models.BadRequest)
 		return
 	}
-	err := s.app.UpdateUser(c.Request.Context(), id, userID, u)
+	user.ID, err = getParamInt(c, "id")
 	if err != nil {
-		models.ReplyError(c, err)
+		replyError(c, err)
+		return
+	}
+	u, err := getUserFromContext(c)
+	if err != nil {
+		replyError(c, err)
+		return
+	}
+
+	err = s.app.UpdateUser(c.Request.Context(), u, user)
+	if err != nil {
+		replyError(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, models.OK)
 }
 
-func (s *Server) deleteUser(c *gin.Context) {
-	id := c.GetInt("id")
-	userID := c.GetInt("user_id")
-	err := s.app.DeleteUser(c.Request.Context(), id, userID)
+func (s *server) deleteUser(c *gin.Context) {
+	u, err := getUserFromContext(c)
 	if err != nil {
-		models.ReplyError(c, err)
+		replyError(c, err)
+		return
+	}
+	id, err := getParamInt(c, "id")
+	if err != nil {
+		replyError(c, err)
+		return
+	}
+
+	err = s.app.DeleteUser(c.Request.Context(), u, id)
+	if err != nil {
+		replyError(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, models.OK)
