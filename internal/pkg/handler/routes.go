@@ -31,14 +31,14 @@ func (s *server) initRoutes() *gin.Engine {
 		employee.DELETE("/:id", s.deleteEmployee)
 	}
 
-	// department := router.Group("/department")
-	// {
-	//	department.POST("/")
-	//	department.GET("/")
-	//	department.GET("/:id")
-	//	department.PUT("/:id")
-	//	department.DELETE("/:id")
-	// }
+	department := router.Group("/department")
+	{
+		department.POST("/", s.createDepartment)
+		department.GET("/", s.getAllDepartments)
+		department.GET("/:id", s.getDepartmentByID)
+		department.PUT("/:id", s.updateDepartment)
+		department.DELETE("/:id", s.deleteDepartment)
+	}
 	//
 	// position := router.Group("/position")
 	// {
