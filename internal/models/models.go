@@ -69,20 +69,18 @@ type Position struct {
 	Qualification string  `json:"qualification"`
 }
 
-type VacationRequest struct {
+type Request struct {
 	ID         int    `json:"id"`
 	EmployeeID int    `json:"employee_id"`
 	StartDate  string `json:"start_date"`
 	EndDate    string `json:"end_date"`
 	Reason     string `json:"reason"`
+	TypeID     int    `json:"type_id"`
 }
 
-type SickLeaveRequest struct {
-	ID         int    `json:"id"`
-	EmployeeID int    `json:"employee_id"`
-	StartDate  string `json:"start_date"`
-	EndDate    string `json:"end_date"`
-	Reason     string `json:"reason"`
+type Type struct {
+	ID    int    `json:"id"`
+	Title string `json:"title"`
 }
 
 type User struct {

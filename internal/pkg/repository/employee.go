@@ -9,7 +9,7 @@ import (
 
 func (d *DB) CreateEmployee(ctx context.Context, e models.Employee) (id int, err error) {
 	err = d.conn.QueryRow(ctx,
-		`INSERT INTO employees (first_name, last_name, position, department, employment_date, salary) 
+		`INSERT INTO employees (first_name, last_name, position_id, department_id, employment_date, salary) 
 		VAlUES ($1, $2, $3, $4, $5, $6) RETURNING id;`,
 		e.FirstName, e.LastName, e.PositionID, e.DepartmentID, e.EmploymentDate, e.Salary).Scan(&id)
 	return

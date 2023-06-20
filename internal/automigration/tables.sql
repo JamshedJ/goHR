@@ -50,7 +50,7 @@ CREATE TABLE requests (
     start_date      DATE NOT NULL,
     end_date        DATE NOT NULL,
     reason          VARCHAR(255),
-    type_id         INT NOT NULL FOREIGN KEY REFERENCES types(id)
+    type_id         INT NOT NULL REFERENCES types(id)
 );
 
 CREATE TABLE types (
