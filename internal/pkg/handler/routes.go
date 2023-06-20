@@ -39,15 +39,15 @@ func (s *server) initRoutes() *gin.Engine {
 		department.PUT("/:id", s.updateDepartment)
 		department.DELETE("/:id", s.deleteDepartment)
 	}
-	//
-	// position := router.Group("/position")
-	// {
-	//	position.POST("/")
-	//	position.GET("/")
-	//	position.GET("/:id")
-	//	position.PUT("/:id")
-	//	position.DELETE("/:id")
-	// }
+	
+	position := router.Group("/position")
+	{
+		position.POST("/", s.createPosition)
+		position.GET("/", s.getAllPositions)
+		position.GET("/:id", s.getPositionByID)
+		position.PUT("/:id", s.updatePosition)
+		position.DELETE("/:id", s.deletePosition)
+	}
 	//
 	// vacationRequest := router.Group("/vacationRequest")
 	// {

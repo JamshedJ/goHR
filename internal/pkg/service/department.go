@@ -43,7 +43,7 @@ func (a *App) GetAllDepartments(ctx context.Context) (departments []models.Depar
 func (a *App) UpdateDepartment(ctx context.Context, d models.Department) (err error) {
 	err = a.db.UpdateDepartment(ctx, d)
 	if err != nil {
-		log.Println("app UpdateEmployee", err)
+		log.Println("app UpdateDepartment", err)
 	}
 	return
 }

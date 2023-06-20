@@ -29,7 +29,7 @@ func (d *DB) GetDepartmentByID(ctx context.Context, id int) (dp models.Departmen
 		); err == pgx.ErrNoRows {
 			err = models.ErrNoRows
 		}
-		return
+	return
 }
 
 func (d *DB) GetAllDepartments(ctx context.Context) (departments []models.Department, err error) {
