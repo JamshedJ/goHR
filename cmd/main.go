@@ -4,13 +4,18 @@ import (
 	"context"
 	"log"
 
+	"github.com/JamshedJ/goHR/internal/configs"
+	"github.com/JamshedJ/goHR/internal/logger"
 	"github.com/JamshedJ/goHR/internal/pkg/handler"
 	"github.com/JamshedJ/goHR/internal/pkg/repository"
 	"github.com/JamshedJ/goHR/internal/pkg/service"
 )
 
 func main() {
-	log.Println("App started")
+	configs.PutAdditionalSettings()
+	logger.Init()
+
+	logger.Info.Println("App started")
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -34,5 +39,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("App exited")
+	logger.Info.Println("App exited")
 }
