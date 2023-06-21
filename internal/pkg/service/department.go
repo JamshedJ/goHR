@@ -7,7 +7,14 @@ import (
 	"github.com/JamshedJ/goHR/internal/models"
 )
 
-func (a *App) CreateDepartment(ctx context.Context, d models.Department) (id int, err error) {
+func (a *App) CreateDepartment(ctx context.Context, u models.User, d models.Department) (id int, err error) {
+	if !u.IsAdmin() {
+		return 0, models.ErrUnauthorized
+	}
+	if !d.Validate() {
+		return 0, models.ErrBadRequest
+	}
+
 	id, err = a.db.CreateDepartment(ctx, d)
 	if err != nil {
 		log.Println("app CreateDepartment", err)
@@ -19,6 +26,7 @@ func (a *App) GetDepartmentByID(ctx context.Context, id int) (department models.
 	if id <= 0 {
 		return department, models.ErrBadRequest
 	}
+
 	department, err = a.db.GetDepartmentByID(ctx, id)
 	if err != nil {
 		if err != models.ErrNoRows {
@@ -29,7 +37,11 @@ func (a *App) GetDepartmentByID(ctx context.Context, id int) (department models.
 	return
 }
 
-func (a *App) GetAllDepartments(ctx context.Context) (departments []models.Department, err error) {
+func (a *App) GetAllDepartments(ctx context.Context, u models.User) (departments []models.Department, err error) {
+	if !u.IsAdmin() {
+		return nil, models.ErrUnauthorized
+	}
+
 	departments, err = a.db.GetAllDepartments(ctx)
 	if err != nil {
 		if err != models.ErrNoRows {
@@ -40,7 +52,14 @@ func (a *App) GetAllDepartments(ctx context.Context) (departments []models.Depar
 	return
 }
 
-func (a *App) UpdateDepartment(ctx context.Context, d models.Department) (err error) {
+func (a *App) UpdateDepartment(ctx context.Context, u models.User, d models.Department) (err error) {
+	if !u.IsAdmin() {
+		return models.ErrUnauthorized
+	}
+	if !d.Validate() {
+		return models.ErrBadRequest
+	}
+
 	err = a.db.UpdateDepartment(ctx, d)
 	if err != nil {
 		log.Println("app UpdateDepartment", err)
@@ -48,9 +67,12 @@ func (a *App) UpdateDepartment(ctx context.Context, d models.Department) (err er
 	return
 }
 
-func (a *App) DeleteDepartment(ctx context.Context, id int) (err error) {
+func (a *App) DeleteDepartment(ctx context.Context, u models.User, id int) (err error) {
 	if id <= 0 {
 		return models.ErrBadRequest
+	}
+	if !u.IsAdmin() {
+		return models.ErrUnauthorized
 	}
 
 	err = a.db.DeleteDepartment(ctx, id)

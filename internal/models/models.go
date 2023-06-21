@@ -62,11 +62,37 @@ type Department struct {
 	DepartmentHead string `json:"department_head"`
 }
 
+func (d *Department) Validate() bool {
+	if d.ID < 0 {
+		return false
+	}
+	if len(d.Title) > 255 {
+		return false
+	}
+	if len(d.DepartmentHead) > 255 {
+		return false
+	}
+	return true
+}
+
 type Position struct {
 	ID            int     `json:"id"`
 	Title         string  `json:"title"`
 	Salary        float64 `json:"salary"`
 	Qualification string  `json:"qualification"`
+}
+
+func (p *Position) Validate() bool {
+	if p.ID < 0 {
+		return false
+	}
+	if len(p.Title) > 255 {
+		return false
+	}
+	if len(p.Qualification) > 255 {
+		return false
+	}
+	return true
 }
 
 type EmployeeRequest struct {
