@@ -12,6 +12,7 @@ const (
     	title           VARCHAR(255) 	NOT NULL,
     	department_head VARCHAR(255)
 	);`
+
 	createPositionsTable = `CREATE TABLE IF NOT EXISTS positions
 	(
 		id              SERIAL 			PRIMARY KEY,
@@ -19,6 +20,7 @@ const (
     	salary          DECIMAL(10, 2) 	NOT NULL,
     	qualification   VARCHAR(255)
 	);`
+
 	createEmployeesTable = `CREATE TABLE IF NOT EXISTS employees
 	(
 		id              SERIAL 			PRIMARY KEY,
@@ -29,6 +31,7 @@ const (
     	employment_date DATE 			NOT NULL,
     	salary          DECIMAL(10, 2) 	NOT NULL
 	);`
+
 	createUsersTable = `CREATE TABLE IF NOT EXISTS users
 	(
 		id              SERIAL 			PRIMARY KEY,
@@ -36,36 +39,38 @@ const (
     	password        VARCHAR(255) 	NOT NULL,
     	role            VARCHAR(50) 	DEFAULT 'user' -- admin, user
 	);`
-	createTypesTable = `CREATE TABLE IF NOT EXISTS types
+
+	createEmployeeRequestTypesTable = `CREATE TABLE IF NOT EXISTS employee_request_types
 	(
 		id              SERIAL 			PRIMARY KEY,
     	title           VARCHAR(255)  --(sick_leave or vacation)
 	);`
-	createRequestsTable = `CREATE TABLE IF NOT EXISTS requests
+
+	createEmployeeRequestsTable = `CREATE TABLE IF NOT EXISTS employee_requests
 	(
 		id              SERIAL 			PRIMARY KEY,
     	employee_id     INT 			REFERENCES employees(id),
-    	start_date      DATE 			NOT NULL,
-    	end_date        DATE 			NOT NULL,
+    	starts_at      DATE 			NOT NULL,
+    	ends_at        DATE 			NOT NULL,
     	reason          VARCHAR(255),
-    	type_id         INT 			NOT NULL REFERENCES types(id)
+    	type_id         INT 			NOT NULL REFERENCES employee_request_types(id)
 	);`
 )
 
-var createTable = []string{
-	createDepartmentsTable,
-	createPositionsTable,
-	createEmployeesTable,
-	createUsersTable,
-	createTypesTable,
-	createRequestsTable,
+var createTable = map[string]string{
+	"departments":            createDepartmentsTable,
+	"positions":              createPositionsTable,
+	"employees":              createEmployeesTable,
+	"users":                  createUsersTable,
+	"employee_request_types": createEmployeeRequestTypesTable,
+	"employee_requests":      createEmployeeRequestsTable,
 }
 
 func (d *DB) Up(ctx context.Context) error {
-	for i, table := range createTable {
-		_, err := d.conn.Exec(ctx, table)
+	for tableName, query := range createTable {
+		_, err := d.conn.Exec(ctx, query)
 		if err != nil {
-			return fmt.Errorf("error occurred while creating table №%d: %w", i, err)
+			return fmt.Errorf("error occurred while creating table %q: %w", tableName, err)
 		}
 	}
 	return nil

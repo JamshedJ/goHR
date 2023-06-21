@@ -21,22 +21,6 @@ CREATE TABLE positions (
     qualification   VARCHAR(255)
 );
 
---CREATE TABLE vacation_requests (
---    id              SERIAL PRIMARY KEY,
---    employee_id     INT REFERENCES employees(id),
---    start_date      DATE NOT NULL,
---    end_date        DATE NOT NULL,
---    reason          VARCHAR(255)
---);
---
---CREATE TABLE sick_leave_requests (
---    id              SERIAL PRIMARY KEY,
---    employee_id     INT REFERENCES employees(id),
---    start_date      DATE NOT NULL,
---    end_date        DATE NOT NULL,
---    reason          VARCHAR(255)
---);
-
 CREATE TABLE users (
     id              SERIAL PRIMARY KEY,
     username        VARCHAR(255) NOT NULL,
@@ -44,16 +28,16 @@ CREATE TABLE users (
     role            VARCHAR(50) DEFAULT 'user' -- admin, user
 );
 
-CREATE TABLE requests (
+CREATE TABLE employee_requests (
     id              SERIAL PRIMARY KEY,
     employee_id     INT REFERENCES employees(id),
-    start_date      DATE NOT NULL,
-    end_date        DATE NOT NULL,
+    starts_at       DATE NOT NULL,
+    ends_at         DATE NOT NULL,
     reason          VARCHAR(255),
-    type_id         INT NOT NULL REFERENCES types(id)
+    type_id         INT NOT NULL REFERENCES employee_request_types(id)
 );
 
-CREATE TABLE types (
+CREATE TABLE employee_request_types (
     id              SERIAL PRIMARY KEY,
     title           VARCHAR(255)  --(sick_leave or vacation)
 );

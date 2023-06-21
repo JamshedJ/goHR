@@ -1,7 +1,7 @@
 package models
 
 type Settings struct {
-	AppParams      Params           `json:"app"`
+	AppParams Params `json:"app"`
 }
 
 type Params struct {

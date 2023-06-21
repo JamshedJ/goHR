@@ -7,85 +7,85 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (d *DB) CreateRequest(ctx context.Context, r models.Request) (id int, err error) {
+func (d *DB) CreateEmployeeRequest(ctx context.Context, r models.EmployeeRequest) (id int, err error) {
 	err = d.conn.QueryRow(ctx,
-		`INSERT INTO requests (employee_id, start_date, end_date, reason, type_id) 
+		`INSERT INTO employee_requests (employee_id, starts_at, ends_at, reason, type_id) 
 		VAlUES ($1, $2, $3, $4, $5) RETURNING id;`,
-		r.EmployeeID, r.StartDate, r.EndDate, r.Reason, r.TypeID).Scan(&id)
+		r.EmployeeID, r.StartsAt, r.EndsAt, r.Reason, r.EmployeeRequestTypeID).Scan(&id)
 	return
 }
 
-func (d *DB) GetRequestByID(ctx context.Context, id int) (r models.Request, err error) {
+func (d *DB) GetRequestByID(ctx context.Context, id int) (e models.EmployeeRequest, err error) {
 	if err = d.conn.QueryRow(ctx,
 		`SELECT
 			id,
 			employee_id,
-			start_date,
-			end_date,
+			starts_at,
+			ends_at,
 			reason,
 			type_id
-		FROM requests
+		FROM employee_requests
 		WHERE id = $1;`, id).Scan(
-		&r.ID,
-		&r.EmployeeID,
-		&r.StartDate,
-		&r.EndDate,
-		&r.Reason,
-		&r.TypeID,
+		&e.ID,
+		&e.EmployeeID,
+		&e.StartsAt,
+		&e.EndsAt,
+		&e.Reason,
+		&e.EmployeeRequestTypeID,
 	); err == pgx.ErrNoRows {
 		err = models.ErrNoRows
 	}
 	return
 }
 
-func (d *DB) GetAllRequests(ctx context.Context) (requests []models.Request, err error) {
+func (d *DB) GetAllRequests(ctx context.Context) (requests []models.EmployeeRequest, err error) {
 	rows, err := d.conn.Query(ctx,
 		`SELECT
 			id,
 			employee_id,
-			start_date,
-			end_date,
+			starts_at,
+			ends_at,
 			reason,
 			type_id
-		FROM requests;`)
+		FROM employee_requests;`)
 	if err != nil {
 		return
 	}
 	defer rows.Close()
 
-	requests = make([]models.Request, 0)
+	requests = make([]models.EmployeeRequest, 0)
 	for rows.Next() {
-		var r models.Request
+		var e models.EmployeeRequest
 		if err = rows.Scan(
-			&r.ID,
-			&r.EmployeeID,
-			&r.StartDate,
-			&r.EndDate,
-			&r.Reason,
-			&r.TypeID,
+			&e.ID,
+			&e.EmployeeID,
+			&e.StartsAt,
+			&e.EndsAt,
+			&e.Reason,
+			&e.EmployeeRequestTypeID,
 		); err != nil {
 			return
 		}
-		requests = append(requests, r)
+		requests = append(requests, e)
 	}
 	return
 }
 
-func (d *DB) UpdateRequest(ctx context.Context, r models.Request) (err error) {
+func (d *DB) UpdateEmployeeRequest(ctx context.Context, e models.EmployeeRequest) (err error) {
 	result, err := d.conn.Exec(ctx, `
-		UPDATE requests SET
+		UPDATE employee_requests SET
 			employee_id = $2,
-			start_date = $3,
-			end_date = $4,
+			starts_at = $3,
+			ends_at = $4,
 			reason = $5,
 			type_id = $6
 		WHERE id = $1;`,
-		r.ID,
-		r.EmployeeID,
-		r.StartDate,
-		r.EndDate,
-		r.Reason,
-		r.TypeID,
+		e.ID,
+		e.EmployeeID,
+		e.StartsAt,
+		e.EndsAt,
+		e.Reason,
+		e.EmployeeRequestTypeID,
 	)
 	if err != nil {
 		return
@@ -97,7 +97,7 @@ func (d *DB) UpdateRequest(ctx context.Context, r models.Request) (err error) {
 }
 
 func (d *DB) DeleteRequest(ctx context.Context, id int) (err error) {
-	result, err := d.conn.Exec(ctx, `DELETE FROM requests WHERE id = $1;`, id)
+	result, err := d.conn.Exec(ctx, `DELETE FROM employee_requests WHERE id = $1;`, id)
 	if err != nil {
 		return
 	}

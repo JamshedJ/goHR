@@ -39,7 +39,7 @@ func (s *server) initRoutes() *gin.Engine {
 		department.PUT("/:id", s.updateDepartment)
 		department.DELETE("/:id", s.deleteDepartment)
 	}
-	
+
 	position := router.Group("/position")
 	{
 		position.POST("/", s.createPosition)
@@ -48,23 +48,23 @@ func (s *server) initRoutes() *gin.Engine {
 		position.PUT("/:id", s.updatePosition)
 		position.DELETE("/:id", s.deletePosition)
 	}
-	
-	request := router.Group("/request")
+
+	employeeRequest := router.Group("/employee_request")
 	{
-		request.POST("/", s.createRequest)
-		request.GET("/", s.getAllRequests)
-		request.GET("/:id", s.getRequestByID)
-		request.PUT("/:id", s.updateRequest)
-		request.DELETE("/:id", s.deleteRequest)
+		employeeRequest.POST("/", s.createEmployeeRequest)
+		employeeRequest.GET("/", s.getAllEmployeeRequests)
+		employeeRequest.GET("/:id", s.getEmployeeRequestByID)
+		employeeRequest.PUT("/:id", s.updateEmployeeRequest)
+		employeeRequest.DELETE("/:id", s.deleteEmployeeRequest)
 	}
-	
-	types := router.Group("/type")
+
+	employeeRequestTypes := router.Group("/employee_request_type", s.mwUserAuth)
 	{
-		types.POST("/", s.createType)
-		types.GET("/", s.getAllTypes)
-		types.GET("/:id", s.getTypeByID)
-		types.PUT("/:id", s.updateType)
-		types.DELETE("/:id", s.deleteType)
+		employeeRequestTypes.POST("/", s.createEmployeeRequestType)
+		employeeRequestTypes.GET("/", s.getAllEmployeerequestTypes)
+		employeeRequestTypes.GET("/:id", s.getEmployeeRequestTypeByID)
+		employeeRequestTypes.PUT("/:id", s.updateEmployeeRequestType)
+		employeeRequestTypes.DELETE("/:id", s.deleteEmployeeRequestType)
 	}
 
 	return router

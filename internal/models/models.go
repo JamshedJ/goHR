@@ -69,28 +69,50 @@ type Position struct {
 	Qualification string  `json:"qualification"`
 }
 
-type Request struct {
-	ID         int    `json:"id"`
-	EmployeeID int    `json:"employee_id"`
-	StartDate  string `json:"start_date"`
-	EndDate    string `json:"end_date"`
-	Reason     string `json:"reason"`
-	TypeID     int    `json:"type_id"`
+type EmployeeRequest struct {
+	ID                    int    `json:"id"`
+	EmployeeID            int    `json:"employee_id"`
+	StartsAt              string `json:"starts_at"`
+	EndsAt                string `json:"ends_at"`
+	Reason                string `json:"reason"`
+	EmployeeRequestTypeID int    `json:"employee_request_type_id"`
 }
 
-func (r *Request) Validate() bool {
-	if _, err := time.Parse("2006-01-02", r.StartDate); err != nil {
+func (e *EmployeeRequest) Validate() bool {
+	if e.ID < 0 {
 		return false
 	}
-	if _, err := time.Parse("2006-01-02", r.EndDate); err != nil {
+	if e.EmployeeID <= 0 {
+		return false
+	}
+	if _, err := time.Parse("2006-01-02", e.StartsAt); err != nil {
+		return false
+	}
+	if _, err := time.Parse("2006-01-02", e.EndsAt); err != nil {
+		return false
+	}
+	if len(e.Reason) > 255 {
+		return false
+	}
+	if e.EmployeeRequestTypeID <= 0 {
 		return false
 	}
 	return true
 }
 
-type Type struct {
+type EmployeeRequestType struct {
 	ID    int    `json:"id"`
 	Title string `json:"title"`
+}
+
+func (e *EmployeeRequestType) Validate() bool {
+	if e.ID < 0 {
+		return false
+	}
+	if len(e.Title) > 255 {
+		return false
+	}
+	return true
 }
 
 type User struct {
