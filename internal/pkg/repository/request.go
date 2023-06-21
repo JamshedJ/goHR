@@ -1,112 +1,108 @@
 package repository
 
-// import (
-// 	"context"
+import (
+	"context"
 
-// 	"github.com/JamshedJ/goHR/internal/models"
-// 	"github.com/jackc/pgx/v5"
-// )
+	"github.com/JamshedJ/goHR/internal/models"
+	"github.com/jackc/pgx/v5"
+)
 
-// func (d *DB) CreateRequest(ctx context.Context, r models.Request) (id int, err error) {
-// 	err = d.conn.QueryRow(ctx,
-// 		`INSERT INTO requests (first_name, last_name, position, department, employment_date, salary) 
-// 		VAlUES ($1, $2, $3, $4, $5, $6) RETURNING id;`,
-// 		e.FirstName, e.LastName, e.PositionID, e.DepartmentID, e.EmploymentDate, e.Salary).Scan(&id)
-// 	return
-// }
+func (d *DB) CreateRequest(ctx context.Context, r models.Request) (id int, err error) {
+	err = d.conn.QueryRow(ctx,
+		`INSERT INTO requests (employee_id, start_date, end_date, reason, type_id) 
+		VAlUES ($1, $2, $3, $4, $5) RETURNING id;`,
+		r.EmployeeID, r.StartDate, r.EndDate, r.Reason, r.TypeID).Scan(&id)
+	return
+}
 
-// func (d *DB) GetEmployeeByID(ctx context.Context, id int) (e models.Employee, err error) {
-// 	if err = d.conn.QueryRow(ctx,
-// 		`SELECT
-// 			id,
-// 			first_name,
-// 			last_name,
-// 			position_id,
-// 			department_id,
-// 			employment_date,
-// 			salary
-// 		FROM employees
-// 		WHERE id = $1;`, id).Scan(
-// 		&e.ID,
-// 		&e.FirstName,
-// 		&e.LastName,
-// 		&e.PositionID,
-// 		&e.DepartmentID,
-// 		&e.EmploymentDate,
-// 		&e.Salary,
-// 	); err == pgx.ErrNoRows {
-// 		err = models.ErrNoRows
-// 	}
-// 	return
-// }
+func (d *DB) GetRequestByID(ctx context.Context, id int) (r models.Request, err error) {
+	if err = d.conn.QueryRow(ctx,
+		`SELECT
+			id,
+			employee_id,
+			start_date,
+			end_date,
+			reason,
+			type_id
+		FROM requests
+		WHERE id = $1;`, id).Scan(
+		&r.ID,
+		&r.EmployeeID,
+		&r.StartDate,
+		&r.EndDate,
+		&r.Reason,
+		&r.TypeID,
+	); err == pgx.ErrNoRows {
+		err = models.ErrNoRows
+	}
+	return
+}
 
-// func (d *DB) GetEmployees(ctx context.Context) (employees []models.Employee, err error) {
-// 	rows, err := d.conn.Query(ctx,
-// 		`SELECT
-// 			id,
-// 			first_name,
-// 			last_name,
-// 			position_id,
-// 			department_id,
-// 			employment_date,
-// 			salary
-// 		FROM employees;`)
-// 	if err != nil {
-// 		return
-// 	}
-// 	defer rows.Close()
+func (d *DB) GetAllRequests(ctx context.Context) (requests []models.Request, err error) {
+	rows, err := d.conn.Query(ctx,
+		`SELECT
+			id,
+			employee_id,
+			start_date,
+			end_date,
+			reason,
+			type_id
+		FROM requests;`)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
 
-// 	employees = make([]models.Employee, 0)
-// 	for rows.Next() {
-// 		var e models.Employee
-// 		if err = rows.Scan(&e.ID,
-// 			&e.FirstName,
-// 			&e.LastName,
-// 			&e.PositionID,
-// 			&e.DepartmentID,
-// 			&e.EmploymentDate,
-// 			&e.Salary); err != nil {
-// 			return
-// 		}
-// 		employees = append(employees, e)
-// 	}
-// 	return
-// }
+	requests = make([]models.Request, 0)
+	for rows.Next() {
+		var r models.Request
+		if err = rows.Scan(
+			&r.ID,
+			&r.EmployeeID,
+			&r.StartDate,
+			&r.EndDate,
+			&r.Reason,
+			&r.TypeID,
+		); err != nil {
+			return
+		}
+		requests = append(requests, r)
+	}
+	return
+}
 
-// func (d *DB) UpdateEmployee(ctx context.Context, e models.Employee) (err error) {
-// 	result, err := d.conn.Exec(ctx, `
-// 		UPDATE employees SET
-// 			first_name = $2,
-// 			last_name = $3,
-// 			position_id = $4,
-// 			department_id = $5,
-// 			employment_date = $6,
-// 			salary = $7
-// 		WHERE id = $1;`,
-// 		e.ID,
-// 		e.FirstName,
-// 		e.LastName,
-// 		e.PositionID,
-// 		e.DepartmentID,
-// 		e.EmploymentDate,
-// 		e.Salary,
-// 	)
-// 	if err != nil {
-// 		return
-// 	}
-// 	if result.RowsAffected() != 1 {
-// 		return models.ErrNoRows
-// 	}
-// 	return
-// }
+func (d *DB) UpdateRequest(ctx context.Context, r models.Request) (err error) {
+	result, err := d.conn.Exec(ctx, `
+		UPDATE requests SET
+			employee_id = $2,
+			start_date = $3,
+			end_date = $4,
+			reason = $5,
+			type_id = $6
+		WHERE id = $1;`,
+		r.ID,
+		r.EmployeeID,
+		r.StartDate,
+		r.EndDate,
+		r.Reason,
+		r.TypeID,
+	)
+	if err != nil {
+		return
+	}
+	if result.RowsAffected() != 1 {
+		return models.ErrNoRows
+	}
+	return
+}
 
-// func (d *DB) DeleteEmployee(ctx context.Context, id int) (err error) {
-// 	result, err := d.conn.Exec(ctx, `DELETE FROM employees WHERE id = $1;`, id)
-// 	if err != nil {
-// 		return
-// 	}
-// 	if result.RowsAffected() != 1 {
-// 		return models.ErrNoRows
-// 	}
-// 	return
-// }
+func (d *DB) DeleteRequest(ctx context.Context, id int) (err error) {
+	result, err := d.conn.Exec(ctx, `DELETE FROM requests WHERE id = $1;`, id)
+	if err != nil {
+		return
+	}
+	if result.RowsAffected() != 1 {
+		return models.ErrNoRows
+	}
+	return
+}

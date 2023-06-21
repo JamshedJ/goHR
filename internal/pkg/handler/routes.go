@@ -48,24 +48,24 @@ func (s *server) initRoutes() *gin.Engine {
 		position.PUT("/:id", s.updatePosition)
 		position.DELETE("/:id", s.deletePosition)
 	}
-	//
-	// vacationRequest := router.Group("/vacationRequest")
-	// {
-	//	vacationRequest.POST("/")
-	//	vacationRequest.GET("/")
-	//	vacationRequest.GET("/:id")
-	//	vacationRequest.PUT("/:id")
-	//	vacationRequest.DELETE("/:id")
-	// }
-	//
-	// sickLeaveRequest := router.Group("/sickLeaveRequest")
-	// {
-	//	sickLeaveRequest.POST("/")
-	//	sickLeaveRequest.GET("/")
-	//	sickLeaveRequest.GET("/:id")
-	//	sickLeaveRequest.PUT("/:id")
-	//	sickLeaveRequest.DELETE("/:id")
-	// }
+	
+	request := router.Group("/request")
+	{
+		request.POST("/", s.createRequest)
+		request.GET("/", s.getAllRequests)
+		request.GET("/:id", s.getRequestByID)
+		request.PUT("/:id", s.updateRequest)
+		request.DELETE("/:id", s.deleteRequest)
+	}
+	
+	types := router.Group("/type")
+	{
+		types.POST("/", s.createType)
+		types.GET("/", s.getAllTypes)
+		types.GET("/:id", s.getTypeByID)
+		types.PUT("/:id", s.updateType)
+		types.DELETE("/:id", s.deleteType)
+	}
 
 	return router
 }

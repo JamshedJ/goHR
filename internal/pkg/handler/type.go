@@ -7,14 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (s *server) createRequest(c *gin.Context) {
-	var r models.Request
-	if err := c.BindJSON(&r); err != nil {
+func (s *server) createType(c *gin.Context) {
+	var t models.Type
+	if err := c.BindJSON(&t); err != nil {
 		c.JSON(http.StatusBadRequest, models.BadRequest)
 		return
 	}
 
-	id, err := s.app.CreateRequest(c.Request.Context(), r)
+	id, err := s.app.CreateType(c.Request.Context(), t)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -22,45 +22,45 @@ func (s *server) createRequest(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "success", "id": id})
 }
 
-func (s *server) getRequestByID(c *gin.Context) {
+func (s *server) getTypeByID(c *gin.Context) {
 	id, err := getParamInt(c, "id")
 	if err != nil {
 		replyError(c, err)
 		return
 	}
-	
-	employee, err := s.app.GetRequestByID(c.Request.Context(), id)
+
+	types, err := s.app.GetTypeByID(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, employee)
+	c.JSON(http.StatusOK, types)
 }
 
-func (s *server) getAllRequests(c *gin.Context) {
-	requests, err := s.app.GetAllRequests(c.Request.Context())
+func (s *server) getAllTypes(c *gin.Context) {
+	types, err := s.app.GetAllTypes(c.Request.Context())
 	if err != nil {
 		replyError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, requests)
+	c.JSON(http.StatusOK, types)
 }
 
-func (s *server) updateRequest(c *gin.Context) {
-	var r models.Request
-	err := c.BindJSON(&r)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-	
-	r.ID, err = getParamInt(c, "id")
+func (s *server) updateType(c *gin.Context) {
+	var t models.Type
+	err := c.BindJSON(&t)
 	if err != nil {
 		replyError(c, err)
 		return
 	}
 
-	err = s.app.UpdateRequest(c.Request.Context(), r)
+	t.ID, err = getParamInt(c, "id")
+	if err != nil {
+		replyError(c, err)
+		return
+	}
+
+	err = s.app.UpdateType(c.Request.Context(), t)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -68,14 +68,14 @@ func (s *server) updateRequest(c *gin.Context) {
 	c.JSON(http.StatusOK, models.OK)
 }
 
-func (s *server) deleteRequest(c *gin.Context) {
+func (s *server) deleteType(c *gin.Context) {
 	id, err := getParamInt(c, "id")
 	if err != nil {
 		replyError(c, err)
 		return
 	}
 
-	err = s.app.DeleteRequest(c.Request.Context(), id)
+	err = s.app.DeleteType(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return

@@ -78,6 +78,16 @@ type Request struct {
 	TypeID     int    `json:"type_id"`
 }
 
+func (r *Request) Validate() bool {
+	if _, err := time.Parse("2006-01-02", r.StartDate); err != nil {
+		return false
+	}
+	if _, err := time.Parse("2006-01-02", r.EndDate); err != nil {
+		return false
+	}
+	return true
+}
+
 type Type struct {
 	ID    int    `json:"id"`
 	Title string `json:"title"`
