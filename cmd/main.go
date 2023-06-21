@@ -18,10 +18,10 @@ func main() {
 	db := repository.New(ctx, "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable")
 	defer db.Close(ctx)
 
-	// if err := automigration.Up(ctx); err != nil {
-	//	log.Fatal("Error while migrating tables: ", err)
-	//	return
-	// }
+	if err := db.Up(ctx); err != nil {
+		log.Fatal("Error while migrating tables: ", err)
+		return
+	}
 
 	// if err := db.Down(ctx); err != nil {
 	// 	log.Fatal("Error while dropping tables: ", err)
