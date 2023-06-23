@@ -2,10 +2,9 @@ package main
 
 import (
 	"context"
-	"log"
 
 	"github.com/JamshedJ/goHR/internal/configs"
-	"github.com/JamshedJ/goHR/internal/logger"
+	"github.com/JamshedJ/goHR/internal/log"
 	"github.com/JamshedJ/goHR/internal/pkg/handler"
 	"github.com/JamshedJ/goHR/internal/pkg/repository"
 	"github.com/JamshedJ/goHR/internal/pkg/service"
@@ -13,9 +12,12 @@ import (
 
 func main() {
 	configs.PutAdditionalSettings()
-	logger.Init()
 
-	logger.Info.Println("App started")
+	if err := log.Init(); err != nil {
+		panic(err)
+	}
+
+	log.Info.Println("App started")
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -24,8 +26,7 @@ func main() {
 	defer db.Close(ctx)
 
 	if err := db.Up(ctx); err != nil {
-		log.Fatal("Error while migrating tables: ", err)
-		return
+		log.Error.Fatal("Error while migrating tables: ", err)
 	}
 
 	// if err := db.Down(ctx); err != nil {
@@ -36,8 +37,8 @@ func main() {
 	app := service.New(db)
 
 	if err := handler.Run(ctx, app, ":8080"); err != nil {
-		log.Fatal(err)
+		log.Error.Fatal(err)
 	}
 
-	logger.Info.Println("App exited")
+	log.Info.Println("App exited")
 }

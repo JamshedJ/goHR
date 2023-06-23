@@ -14,13 +14,7 @@ func (s *server) createEmployee(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	id, err := s.app.CreateEmployee(c.Request.Context(), u, e)
+	id, err := s.app.CreateEmployee(c.Request.Context(), e)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -29,18 +23,15 @@ func (s *server) createEmployee(c *gin.Context) {
 }
 
 func (s *server) getEmployeeByID(c *gin.Context) {
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
 	id, err := getParamInt(c, "id")
 	if err != nil {
 		replyError(c, err)
 		return
 	}
 
-	employee, err := s.app.GetEmployeeByID(c.Request.Context(), u, id)
+	_, isAdmin := c.Get("is_admin")
+
+	employee, err := s.app.GetEmployeeByID(c.Request.Context(), id, isAdmin)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -49,13 +40,9 @@ func (s *server) getEmployeeByID(c *gin.Context) {
 }
 
 func (s *server) getEmployees(c *gin.Context) {
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
+	_, isAdmin := c.Get("is_admin")
 
-	employees, err := s.app.GetEmployees(c.Request.Context(), u)
+	employees, err := s.app.GetEmployees(c.Request.Context(), isAdmin)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -70,18 +57,13 @@ func (s *server) updateEmployee(c *gin.Context) {
 		replyError(c, err)
 		return
 	}
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
 	e.ID, err = getParamInt(c, "id")
 	if err != nil {
 		replyError(c, err)
 		return
 	}
 
-	err = s.app.UpdateEmployee(c.Request.Context(), u, e)
+	err = s.app.UpdateEmployee(c.Request.Context(), e)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -90,18 +72,13 @@ func (s *server) updateEmployee(c *gin.Context) {
 }
 
 func (s *server) deleteEmployee(c *gin.Context) {
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
 	id, err := getParamInt(c, "id")
 	if err != nil {
 		replyError(c, err)
 		return
 	}
 
-	err = s.app.DeleteEmployee(c.Request.Context(), u, id)
+	err = s.app.DeleteEmployee(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return

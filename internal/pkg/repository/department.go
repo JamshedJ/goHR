@@ -16,7 +16,7 @@ func (d *DB) CreateDepartment(ctx context.Context, dp models.Department) (id int
 }
 
 func (d *DB) GetDepartmentByID(ctx context.Context, id int) (dp models.Department, err error) {
-	if err = d.conn.QueryRow(ctx, 
+	if err = d.conn.QueryRow(ctx,
 		`SELECT
 			id,
 			title,
@@ -26,14 +26,14 @@ func (d *DB) GetDepartmentByID(ctx context.Context, id int) (dp models.Departmen
 		&dp.ID,
 		&dp.Title,
 		&dp.DepartmentHead,
-		); err == pgx.ErrNoRows {
-			err = models.ErrNoRows
-		}
+	); err == pgx.ErrNoRows {
+		err = models.ErrNoRows
+	}
 	return
 }
 
 func (d *DB) GetAllDepartments(ctx context.Context) (departments []models.Department, err error) {
-	rows, err := d.conn.Query(ctx, 
+	rows, err := d.conn.Query(ctx,
 		`SELECT
 			id,
 			title,
@@ -46,15 +46,15 @@ func (d *DB) GetAllDepartments(ctx context.Context) (departments []models.Depart
 
 	departments = make([]models.Department, 0)
 	for rows.Next() {
-		var d models.Department
+		var dp models.Department
 		if err = rows.Scan(
-			&d.ID,
-			&d.Title,
-			&d.DepartmentHead,
+			&dp.ID,
+			&dp.Title,
+			&dp.DepartmentHead,
 		); err != nil {
 			return
 		}
-		departments = append(departments, d)
+		departments = append(departments, dp)
 	}
 	return
 }

@@ -8,18 +8,13 @@ import (
 )
 
 func (s *server) getUserById(c *gin.Context) {
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
 	id, err := getParamInt(c, "id")
 	if err != nil {
 		replyError(c, err)
 		return
 	}
 
-	user, err := s.app.GetUserById(c.Request.Context(), u, id)
+	user, err := s.app.GetUserById(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -28,12 +23,7 @@ func (s *server) getUserById(c *gin.Context) {
 }
 
 func (s *server) getAllUsers(c *gin.Context) {
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-	users, err := s.app.GetAllUsers(c.Request.Context(), u)
+	users, err := s.app.GetAllUsers(c.Request.Context())
 	if err != nil {
 		replyError(c, err)
 		return
@@ -53,13 +43,8 @@ func (s *server) updateUser(c *gin.Context) {
 		replyError(c, err)
 		return
 	}
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
 
-	err = s.app.UpdateUser(c.Request.Context(), u, user)
+	err = s.app.UpdateUser(c.Request.Context(), user)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -68,18 +53,13 @@ func (s *server) updateUser(c *gin.Context) {
 }
 
 func (s *server) deleteUser(c *gin.Context) {
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
 	id, err := getParamInt(c, "id")
 	if err != nil {
 		replyError(c, err)
 		return
 	}
 
-	err = s.app.DeleteUser(c.Request.Context(), u, id)
+	err = s.app.DeleteUser(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return

@@ -14,13 +14,7 @@ func (s *server) createEmployeeRequestType(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	id, err := s.app.CreateEmployeeRequestType(c.Request.Context(), u, e)
+	id, err := s.app.CreateEmployeeRequestType(c.Request.Context(), e)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -66,13 +60,7 @@ func (s *server) updateEmployeeRequestType(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	err = s.app.UpdateEmployeeRequestType(c.Request.Context(), u, t)
+	err = s.app.UpdateEmployeeRequestType(c.Request.Context(), t)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -87,13 +75,7 @@ func (s *server) deleteEmployeeRequestType(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	err = s.app.DeleteEmployeeRequestType(c.Request.Context(), u, id)
+	err = s.app.DeleteEmployeeRequestType(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return

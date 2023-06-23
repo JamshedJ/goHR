@@ -19,7 +19,7 @@ func (a *App) CreatePosition(ctx context.Context, p models.Position) (id int, er
 	return
 }
 
-func (a *App) GetPositionByID(ctx context.Context, id int) (position models.Position, err error) {
+func (a *App) GetPositionByID(ctx context.Context, id int, isAdmin bool) (position models.Position, err error) {
 	if id <= 0 {
 		return position, models.ErrBadRequest
 	}
@@ -31,10 +31,17 @@ func (a *App) GetPositionByID(ctx context.Context, id int) (position models.Posi
 		}
 		return
 	}
+	if !isAdmin {
+		position.Salary = 0
+	}
 	return
 }
 
+<<<<<<< HEAD
 func (a *App) GetAllPositions(ctx context.Context) (positions []models.Position, err error) {
+=======
+func (a *App) GetAllPositions(ctx context.Context, isAdmin bool) (positions []models.Position, err error) {
+>>>>>>> 53f4c62490a669c7617f897c1e2e393dd2e02c36
 	positions, err = a.db.GetAllPositions(ctx)
 	if err != nil {
 		if err != models.ErrNoRows {
@@ -42,13 +49,15 @@ func (a *App) GetAllPositions(ctx context.Context) (positions []models.Position,
 		}
 		return
 	}
+	if !isAdmin {
+		for _, p := range positions {
+			p.Salary = 0
+		}
+	}
 	return
 }
 
-func (a *App) UpdatePosition(ctx context.Context, u models.User, p models.Position) (err error) {
-	if !u.IsAdmin() {
-		return models.ErrUnauthorized
-	}
+func (a *App) UpdatePosition(ctx context.Context, p models.Position) (err error) {
 	if !p.Validate() {
 		return models.ErrBadRequest
 	}
@@ -60,12 +69,9 @@ func (a *App) UpdatePosition(ctx context.Context, u models.User, p models.Positi
 	return
 }
 
-func (a *App) DeletePosition(ctx context.Context, u models.User, id int) (err error) {
+func (a *App) DeletePosition(ctx context.Context, id int) (err error) {
 	if id <= 0 {
 		return models.ErrBadRequest
-	}
-	if !u.IsAdmin() {
-		return models.ErrUnauthorized
 	}
 
 	err = a.db.DeletePosition(ctx, id)

@@ -7,10 +7,7 @@ import (
 	"github.com/JamshedJ/goHR/internal/models"
 )
 
-func (a *App) CreateEmployeeRequestType(ctx context.Context, u models.User, e models.EmployeeRequestType) (id int, err error) {
-	if !u.IsAdmin() {
-		return 0, models.ErrUnauthorized
-	}
+func (a *App) CreateEmployeeRequestType(ctx context.Context, e models.EmployeeRequestType) (id int, err error) {
 	if !e.Validate() {
 		return 0, models.ErrBadRequest
 	}
@@ -44,10 +41,7 @@ func (a *App) GetAllEmployeeRequestTypes(ctx context.Context) (erTypes []models.
 	return
 }
 
-func (a *App) UpdateEmployeeRequestType(ctx context.Context, u models.User, e models.EmployeeRequestType) (err error) {
-	if !u.IsAdmin() {
-		return models.ErrUnauthorized
-	}
+func (a *App) UpdateEmployeeRequestType(ctx context.Context, e models.EmployeeRequestType) (err error) {
 	if !e.Validate() || e.ID < 1 {
 		return models.ErrBadRequest
 	}
@@ -58,10 +52,7 @@ func (a *App) UpdateEmployeeRequestType(ctx context.Context, u models.User, e mo
 	return
 }
 
-func (a *App) DeleteEmployeeRequestType(ctx context.Context, u models.User, id int) (err error) {
-	if !u.IsAdmin() {
-		return models.ErrUnauthorized
-	}
+func (a *App) DeleteEmployeeRequestType(ctx context.Context, id int) (err error) {
 	if id <= 0 {
 		return models.ErrBadRequest
 	}

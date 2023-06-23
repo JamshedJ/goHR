@@ -60,13 +60,7 @@ func (s *server) updateDepartment(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	err = s.app.UpdateDepartment(c.Request.Context(), u, d)
+	err = s.app.UpdateDepartment(c.Request.Context(), d)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -81,13 +75,7 @@ func (s *server) deleteDepartment(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	err = s.app.DeleteDepartment(c.Request.Context(), u, id)
+	err = s.app.DeleteDepartment(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return

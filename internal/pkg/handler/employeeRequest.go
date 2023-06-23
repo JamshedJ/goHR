@@ -14,13 +14,7 @@ func (s *server) createEmployeeRequest(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	id, err := s.app.CreateEmployeeRequest(c.Request.Context(), u, r)
+	id, err := s.app.CreateEmployeeRequest(c.Request.Context(), r)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -44,13 +38,7 @@ func (s *server) getEmployeeRequestByID(c *gin.Context) {
 }
 
 func (s *server) getAllEmployeeRequests(c *gin.Context) {
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	requests, err := s.app.GetAllEmployeeRequests(c.Request.Context(), u)
+	requests, err := s.app.GetAllEmployeeRequests(c.Request.Context())
 	if err != nil {
 		replyError(c, err)
 		return
@@ -72,13 +60,7 @@ func (s *server) updateEmployeeRequest(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	err = s.app.UpdateEmployeeRequest(c.Request.Context(), u, r)
+	err = s.app.UpdateEmployeeRequest(c.Request.Context(), r)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -93,13 +75,7 @@ func (s *server) deleteEmployeeRequest(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	err = s.app.DeleteEmployeeRequest(c.Request.Context(), u, id)
+	err = s.app.DeleteEmployeeRequest(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return

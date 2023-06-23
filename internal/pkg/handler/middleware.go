@@ -32,4 +32,13 @@ func (s *server) mwUserAuth(c *gin.Context) {
 		return
 	}
 	c.Set("user", user)
+	c.Set("is_admin", user.IsAdmin())
+}
+
+// всё это, или...
+
+func mwAdmin(c *gin.Context) {
+	if _, ok := c.Get("is_admin"); !ok {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.InternalErr)
+	}
 }

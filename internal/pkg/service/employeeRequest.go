@@ -7,10 +7,7 @@ import (
 	"github.com/JamshedJ/goHR/internal/models"
 )
 
-func (a *App) CreateEmployeeRequest(ctx context.Context, u models.User, r models.EmployeeRequest) (id int, err error) {
-	if !u.IsAdmin() {
-		return 0, models.ErrUnauthorized
-	}
+func (a *App) CreateEmployeeRequest(ctx context.Context, r models.EmployeeRequest) (id int, err error) {
 	if !r.Validate() {
 		return 0, models.ErrBadRequest
 	}
@@ -35,11 +32,7 @@ func (a *App) GetEmployeeRequestByID(ctx context.Context, id int) (request model
 	return
 }
 
-func (a *App) GetAllEmployeeRequests(ctx context.Context, u models.User) (requests []models.EmployeeRequest, err error) {
-	if !u.IsAdmin() {
-		return nil, models.ErrUnauthorized
-	}
-
+func (a *App) GetAllEmployeeRequests(ctx context.Context) (requests []models.EmployeeRequest, err error) {
 	requests, err = a.db.GetAllRequests(ctx)
 	if err != nil {
 		if err != models.ErrNoRows {
@@ -49,10 +42,7 @@ func (a *App) GetAllEmployeeRequests(ctx context.Context, u models.User) (reques
 	return
 }
 
-func (a *App) UpdateEmployeeRequest(ctx context.Context, u models.User, r models.EmployeeRequest) (err error) {
-	if !u.IsAdmin() {
-		return models.ErrUnauthorized
-	}
+func (a *App) UpdateEmployeeRequest(ctx context.Context, r models.EmployeeRequest) (err error) {
 	if !r.Validate() {
 		return models.ErrBadRequest
 	}
@@ -63,10 +53,7 @@ func (a *App) UpdateEmployeeRequest(ctx context.Context, u models.User, r models
 	return
 }
 
-func (a *App) DeleteEmployeeRequest(ctx context.Context, u models.User, id int) (err error) {
-	if !u.IsAdmin() {
-		return models.ErrUnauthorized
-	}
+func (a *App) DeleteEmployeeRequest(ctx context.Context, id int) (err error) {
 	if id <= 0 {
 		return models.ErrBadRequest
 	}

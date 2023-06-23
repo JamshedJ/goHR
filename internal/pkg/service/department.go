@@ -25,30 +25,21 @@ func (a *App) GetDepartmentByID(ctx context.Context, id int) (department models.
 	}
 
 	department, err = a.db.GetDepartmentByID(ctx, id)
-	if err != nil {
-		if err != models.ErrNoRows {
-			log.Println("app GetDepartmentByID", err)
-		}
-		return
+	if err != nil && err != models.ErrNoRows {
+		log.Println("app GetDepartmentByID", err)
 	}
 	return
 }
 
 func (a *App) GetAllDepartments(ctx context.Context) (departments []models.Department, err error) {
 	departments, err = a.db.GetAllDepartments(ctx)
-	if err != nil {
-		if err != models.ErrNoRows {
-			log.Println("app GetAllDepartments", err)
-		}
-		return
+	if err != nil && err != models.ErrNoRows {
+		log.Println("app GetAllDepartments", err)
 	}
 	return
 }
 
-func (a *App) UpdateDepartment(ctx context.Context, u models.User, d models.Department) (err error) {
-	if !u.IsAdmin() {
-		return models.ErrUnauthorized
-	}
+func (a *App) UpdateDepartment(ctx context.Context, d models.Department) (err error) {
 	if !d.Validate() {
 		return models.ErrBadRequest
 	}
@@ -60,12 +51,9 @@ func (a *App) UpdateDepartment(ctx context.Context, u models.User, d models.Depa
 	return
 }
 
-func (a *App) DeleteDepartment(ctx context.Context, u models.User, id int) (err error) {
+func (a *App) DeleteDepartment(ctx context.Context, id int) (err error) {
 	if id <= 0 {
 		return models.ErrBadRequest
-	}
-	if !u.IsAdmin() {
-		return models.ErrUnauthorized
 	}
 
 	err = a.db.DeleteDepartment(ctx, id)

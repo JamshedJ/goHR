@@ -28,8 +28,9 @@ func (s *server) getPositionByID(c *gin.Context) {
 		replyError(c, err)
 		return
 	}
+	_, isAdmin := c.Get("is_admin")
 
-	position, err := s.app.GetPositionByID(c.Request.Context(), id)
+	position, err := s.app.GetPositionByID(c.Request.Context(), id, isAdmin)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -38,7 +39,13 @@ func (s *server) getPositionByID(c *gin.Context) {
 }
 
 func (s *server) getAllPositions(c *gin.Context) {
+<<<<<<< HEAD
 	positions, err := s.app.GetAllPositions(c.Request.Context())
+=======
+	_, isAdmin := c.Get("is_admin")
+
+	positions, err := s.app.GetAllPositions(c.Request.Context(), isAdmin)
+>>>>>>> 53f4c62490a669c7617f897c1e2e393dd2e02c36
 	if err != nil {
 		replyError(c, err)
 		return
@@ -60,13 +67,7 @@ func (s *server) updatePosition(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	err = s.app.UpdatePosition(c.Request.Context(), u, p)
+	err = s.app.UpdatePosition(c.Request.Context(), p)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -81,13 +82,7 @@ func (s *server) deletePosition(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	err = s.app.DeletePosition(c.Request.Context(), u, id)
+	err = s.app.DeletePosition(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return

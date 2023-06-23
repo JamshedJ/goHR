@@ -18,53 +18,53 @@ func (s *server) initRoutes() *gin.Engine {
 	{
 		user.GET("/:id", s.getUserById)
 		user.GET("/", s.getAllUsers)
-		user.PUT("/", s.updateUser)
-		user.DELETE("/", s.deleteUser)
+		user.PUT("/", mwAdmin, s.updateUser)
+		user.DELETE("/", mwAdmin, s.deleteUser)
 	}
 
 	employee := router.Group("/employee", s.mwUserAuth)
 	{
-		employee.POST("/", s.createEmployee)
+		employee.POST("/", mwAdmin, s.createEmployee)
 		employee.GET("/:id", s.getEmployeeByID)
 		employee.GET("/", s.getEmployees)
-		employee.PUT("/:id", s.updateEmployee)
-		employee.DELETE("/:id", s.deleteEmployee)
+		employee.PUT("/:id", mwAdmin, s.updateEmployee)
+		employee.DELETE("/:id", mwAdmin, s.deleteEmployee)
 	}
 
-	department := router.Group("/department")
+	department := router.Group("/department", s.mwUserAuth)
 	{
-		department.POST("/", s.createDepartment)
+		department.POST("/", mwAdmin, s.createDepartment)
 		department.GET("/", s.getAllDepartments)
-		department.GET("/:id", s.getDepartmentByID)
-		department.PUT("/:id", s.updateDepartment)
-		department.DELETE("/:id", s.deleteDepartment)
+		department.GET("/:id", mwAdmin, s.getDepartmentByID)
+		department.PUT("/:id", mwAdmin, s.updateDepartment)
+		department.DELETE("/:id", mwAdmin, s.deleteDepartment)
 	}
 
-	position := router.Group("/position")
+	position := router.Group("/position", s.mwUserAuth)
 	{
-		position.POST("/", s.createPosition)
+		position.POST("/", mwAdmin, s.createPosition)
 		position.GET("/", s.getAllPositions)
 		position.GET("/:id", s.getPositionByID)
-		position.PUT("/:id", s.updatePosition)
-		position.DELETE("/:id", s.deletePosition)
+		position.PUT("/:id", mwAdmin, s.updatePosition)
+		position.DELETE("/:id", mwAdmin, s.deletePosition)
 	}
 
-	employeeRequest := router.Group("/employee_request")
+	employeeRequest := router.Group("/employee_request", s.mwUserAuth)
 	{
-		employeeRequest.POST("/", s.createEmployeeRequest)
+		employeeRequest.POST("/", mwAdmin, s.createEmployeeRequest)
 		employeeRequest.GET("/", s.getAllEmployeeRequests)
 		employeeRequest.GET("/:id", s.getEmployeeRequestByID)
-		employeeRequest.PUT("/:id", s.updateEmployeeRequest)
-		employeeRequest.DELETE("/:id", s.deleteEmployeeRequest)
+		employeeRequest.PUT("/:id", mwAdmin, s.updateEmployeeRequest)
+		employeeRequest.DELETE("/:id", mwAdmin, s.deleteEmployeeRequest)
 	}
 
 	employeeRequestTypes := router.Group("/employee_request_type", s.mwUserAuth)
 	{
-		employeeRequestTypes.POST("/", s.createEmployeeRequestType)
+		employeeRequestTypes.POST("/", mwAdmin, s.createEmployeeRequestType)
 		employeeRequestTypes.GET("/", s.getAllEmployeerequestTypes)
 		employeeRequestTypes.GET("/:id", s.getEmployeeRequestTypeByID)
-		employeeRequestTypes.PUT("/:id", s.updateEmployeeRequestType)
-		employeeRequestTypes.DELETE("/:id", s.deleteEmployeeRequestType)
+		employeeRequestTypes.PUT("/:id", mwAdmin, s.updateEmployeeRequestType)
+		employeeRequestTypes.DELETE("/:id", mwAdmin, s.deleteEmployeeRequestType)
 	}
 
 	return router
