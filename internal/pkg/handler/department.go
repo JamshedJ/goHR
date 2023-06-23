@@ -14,7 +14,13 @@ func (s *server) createDepartment(c *gin.Context) {
 		return
 	}
 
-	id, err := s.app.CreateDepartment(c.Request.Context(), d)
+	u, err := getUserFromContext(c)
+	if err != nil {
+		replyError(c, err)
+		return
+	}
+
+	id, err := s.app.CreateDepartment(c.Request.Context(), u, d)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -38,7 +44,13 @@ func (s *server) getDepartmentByID(c *gin.Context) {
 }
 
 func (s *server) getAllDepartments(c *gin.Context) {
-	departments, err := s.app.GetAllDepartments(c.Request.Context())
+	u, err := getUserFromContext(c)
+	if err != nil {
+		replyError(c, err)
+		return
+	}
+
+	departments, err := s.app.GetAllDepartments(c.Request.Context(), u)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -60,7 +72,13 @@ func (s *server) updateDepartment(c *gin.Context) {
 		return
 	}
 
-	err = s.app.UpdateDepartment(c.Request.Context(), d)
+	u, err := getUserFromContext(c)
+	if err != nil {
+		replyError(c, err)
+		return
+	}
+
+	err = s.app.UpdateDepartment(c.Request.Context(), u, d)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -75,7 +93,13 @@ func (s *server) deleteDepartment(c *gin.Context) {
 		return
 	}
 
-	err = s.app.DeleteDepartment(c.Request.Context(), id)
+	u, err := getUserFromContext(c)
+	if err != nil {
+		replyError(c, err)
+		return
+	}
+
+	err = s.app.DeleteDepartment(c.Request.Context(), u, id)
 	if err != nil {
 		replyError(c, err)
 		return
