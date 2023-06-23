@@ -14,13 +14,7 @@ func (s *server) createPosition(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	id, err := s.app.CreatePosition(c.Request.Context(), u, p)
+	id, err := s.app.CreatePosition(c.Request.Context(), p)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -44,13 +38,7 @@ func (s *server) getPositionByID(c *gin.Context) {
 }
 
 func (s *server) getAllPositions(c *gin.Context) {
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	positions, err := s.app.GetAllPositions(c.Request.Context(), u)
+	positions, err := s.app.GetAllPositions(c.Request.Context())
 	if err != nil {
 		replyError(c, err)
 		return

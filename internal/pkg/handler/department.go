@@ -14,13 +14,7 @@ func (s *server) createDepartment(c *gin.Context) {
 		return
 	}
 
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	id, err := s.app.CreateDepartment(c.Request.Context(), u, d)
+	id, err := s.app.CreateDepartment(c.Request.Context(), d)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -44,13 +38,7 @@ func (s *server) getDepartmentByID(c *gin.Context) {
 }
 
 func (s *server) getAllDepartments(c *gin.Context) {
-	u, err := getUserFromContext(c)
-	if err != nil {
-		replyError(c, err)
-		return
-	}
-
-	departments, err := s.app.GetAllDepartments(c.Request.Context(), u)
+	departments, err := s.app.GetAllDepartments(c.Request.Context())
 	if err != nil {
 		replyError(c, err)
 		return

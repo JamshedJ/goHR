@@ -83,13 +83,13 @@ type Position struct {
 }
 
 func (p *Position) Validate() bool {
-	if p.ID < 0 {
-		return false
-	}
 	if len(p.Title) > 255 {
 		return false
 	}
 	if len(p.Qualification) > 255 {
+		return false
+	}
+	if p.Salary < 0 {
 		return false
 	}
 	return true

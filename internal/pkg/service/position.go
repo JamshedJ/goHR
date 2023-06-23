@@ -7,10 +7,7 @@ import (
 	"github.com/JamshedJ/goHR/internal/models"
 )
 
-func (a *App) CreatePosition(ctx context.Context, u models.User, p models.Position) (id int, err error) {
-	if !u.IsAdmin() {
-		return 0, models.ErrUnauthorized
-	}
+func (a *App) CreatePosition(ctx context.Context, p models.Position) (id int, err error) {
 	if !p.Validate() {
 		return 0, models.ErrBadRequest
 	}
@@ -37,11 +34,7 @@ func (a *App) GetPositionByID(ctx context.Context, id int) (position models.Posi
 	return
 }
 
-func (a *App) GetAllPositions(ctx context.Context, u models.User) (positions []models.Position, err error) {
-	if !u.IsAdmin() {
-		return nil, models.ErrUnauthorized
-	}
-
+func (a *App) GetAllPositions(ctx context.Context) (positions []models.Position, err error) {
 	positions, err = a.db.GetAllPositions(ctx)
 	if err != nil {
 		if err != models.ErrNoRows {

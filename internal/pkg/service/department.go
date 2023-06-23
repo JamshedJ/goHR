@@ -7,10 +7,7 @@ import (
 	"github.com/JamshedJ/goHR/internal/models"
 )
 
-func (a *App) CreateDepartment(ctx context.Context, u models.User, d models.Department) (id int, err error) {
-	if !u.IsAdmin() {
-		return 0, models.ErrUnauthorized
-	}
+func (a *App) CreateDepartment(ctx context.Context, d models.Department) (id int, err error) {
 	if !d.Validate() {
 		return 0, models.ErrBadRequest
 	}
@@ -37,11 +34,7 @@ func (a *App) GetDepartmentByID(ctx context.Context, id int) (department models.
 	return
 }
 
-func (a *App) GetAllDepartments(ctx context.Context, u models.User) (departments []models.Department, err error) {
-	if !u.IsAdmin() {
-		return nil, models.ErrUnauthorized
-	}
-
+func (a *App) GetAllDepartments(ctx context.Context) (departments []models.Department, err error) {
 	departments, err = a.db.GetAllDepartments(ctx)
 	if err != nil {
 		if err != models.ErrNoRows {
