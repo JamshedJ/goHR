@@ -110,3 +110,29 @@ func (d *DB) DeleteEmployee(ctx context.Context, id int) (err error) {
 	}
 	return
 }
+
+func (d *DB) SearchEmployeeByName(ctx context.Context, query string) (employees []models.Employee, err error) {
+	rows, err := d.conn.Query(ctx, `SELECT * FROM employees WHERE first_name ILIKE '%' || $1 || '%'`, query)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+
+	employees = make([]models.Employee, 0)
+	for rows.Next() {
+		var e models.Employee
+		if err = rows.Scan(
+			&e.ID,
+			&e.FirstName,
+			&e.LastName,
+			&e.PositionID,
+			&e.DepartmentID,
+			&e.EmploymentDate,
+			&e.Salary,
+		); err != nil {
+			return
+		}
+		employees = append(employees, e)
+	}
+	return
+}

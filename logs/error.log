@@ -25,3 +25,13 @@
 2023/06/24 14:36:03.095611 http replyError unhandled error: can't scan into dest[2]: cannot scan date (OID 1082) in binary format into *string
 2023/06/24 14:36:25.937222 app GetEmployeeRequestByID can't scan into dest[2]: cannot scan date (OID 1082) in binary format into *string
 2023/06/24 14:36:25.937222 http replyError unhandled error: can't scan into dest[2]: cannot scan date (OID 1082) in binary format into *string
+2023/06/24 22:41:11.699648 app SearchEmployeeByName ERROR: unterminated quoted identifier at or near """ (SQLSTATE 42601)
+2023/06/24 22:41:11.702916 http replyError unhandled error: ERROR: unterminated quoted identifier at or near """ (SQLSTATE 42601)
+2023/06/24 22:42:16.970188 app SearchEmployeeByName ERROR: relation "tasks" does not exist (SQLSTATE 42P01)
+2023/06/24 22:42:16.970363 http replyError unhandled error: ERROR: relation "tasks" does not exist (SQLSTATE 42P01)
+2023/06/24 22:43:04.079727 app SearchEmployeeByName ERROR: column "title" does not exist (SQLSTATE 42703)
+2023/06/24 22:43:04.080108 http replyError unhandled error: ERROR: column "title" does not exist (SQLSTATE 42703)
+2023/06/24 22:43:54.547176 app SearchEmployeeByName can't scan into dest[5]: cannot scan date (OID 1082) in binary format into *string
+2023/06/24 22:43:54.547401 http replyError unhandled error: can't scan into dest[5]: cannot scan date (OID 1082) in binary format into *string
+2023/06/24 22:56:29.015682 app SearchEmployeeByName can't scan into dest[5]: cannot scan date (OID 1082) in binary format into *string
+2023/06/24 22:56:29.016542 http replyError unhandled error: can't scan into dest[5]: cannot scan date (OID 1082) in binary format into *string

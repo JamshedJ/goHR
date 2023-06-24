@@ -85,3 +85,14 @@ func (s *server) deleteEmployee(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, models.OK)
 }
+
+func (s *server) searchEmployeeByName(c *gin.Context) {
+	query := c.Query("query")
+
+	employee, err := s.app.SearchEmployeeByName(c.Request.Context(), query)
+	if err != nil {
+		replyError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, employee)
+}

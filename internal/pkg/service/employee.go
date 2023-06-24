@@ -75,3 +75,11 @@ func (a *App) DeleteEmployee(ctx context.Context, id int) (err error) {
 	}
 	return
 }
+
+func (a *App) SearchEmployeeByName(ctx context.Context, query string) (employees []models.Employee, err error) {
+	employees, err = a.db.SearchEmployeeByName(ctx, query)
+	if err != nil {
+		log.Error.Println("app SearchEmployeeByName", err)
+	}
+	return
+}

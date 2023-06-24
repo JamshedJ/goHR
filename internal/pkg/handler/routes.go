@@ -29,6 +29,7 @@ func (s *server) initRoutes() *gin.Engine {
 		employee.GET("/", s.getAllEmployees)
 		employee.PUT("/:id", mwAdmin, s.updateEmployee)
 		employee.DELETE("/:id", mwAdmin, s.deleteEmployee)
+		employee.GET("/search", s.searchEmployeeByName)
 	}
 
 	department := router.Group("/department", s.mwUserAuth)
