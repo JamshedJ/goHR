@@ -26,7 +26,7 @@ func (s *server) initRoutes() *gin.Engine {
 	{
 		employee.POST("/", mwAdmin, s.createEmployee)
 		employee.GET("/:id", s.getEmployeeByID)
-		employee.GET("/", s.getEmployees)
+		employee.GET("/", s.getAllEmployees)
 		employee.PUT("/:id", mwAdmin, s.updateEmployee)
 		employee.DELETE("/:id", mwAdmin, s.deleteEmployee)
 	}

@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"log"
 
 	"github.com/JamshedJ/goHR/internal/models"
+	"github.com/JamshedJ/goHR/internal/log"
 )
 
 func (a *App) CreateDepartment(ctx context.Context, d models.Department) (id int, err error) {
@@ -14,7 +14,7 @@ func (a *App) CreateDepartment(ctx context.Context, d models.Department) (id int
 
 	id, err = a.db.CreateDepartment(ctx, d)
 	if err != nil {
-		log.Println("app CreateDepartment", err)
+		log.Error.Println("app CreateDepartment", err)
 	}
 	return
 }
@@ -26,7 +26,7 @@ func (a *App) GetDepartmentByID(ctx context.Context, id int) (department models.
 
 	department, err = a.db.GetDepartmentByID(ctx, id)
 	if err != nil && err != models.ErrNoRows {
-		log.Println("app GetDepartmentByID", err)
+		log.Error.Println("app GetDepartmentByID", err)
 	}
 	return
 }
@@ -34,7 +34,7 @@ func (a *App) GetDepartmentByID(ctx context.Context, id int) (department models.
 func (a *App) GetAllDepartments(ctx context.Context) (departments []models.Department, err error) {
 	departments, err = a.db.GetAllDepartments(ctx)
 	if err != nil && err != models.ErrNoRows {
-		log.Println("app GetAllDepartments", err)
+		log.Error.Println("app GetAllDepartments", err)
 	}
 	return
 }
@@ -46,7 +46,7 @@ func (a *App) UpdateDepartment(ctx context.Context, d models.Department) (err er
 
 	err = a.db.UpdateDepartment(ctx, d)
 	if err != nil {
-		log.Println("app UpdateDepartment", err)
+		log.Error.Println("app UpdateDepartment", err)
 	}
 	return
 }
@@ -58,7 +58,7 @@ func (a *App) DeleteDepartment(ctx context.Context, id int) (err error) {
 
 	err = a.db.DeleteDepartment(ctx, id)
 	if err != nil {
-		log.Println("app DeleteEmployee", err)
+		log.Error.Println("app DeleteEmployee", err)
 	}
 	return
 }

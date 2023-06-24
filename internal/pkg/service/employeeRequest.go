@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"log"
 
 	"github.com/JamshedJ/goHR/internal/models"
+	"github.com/JamshedJ/goHR/internal/log"
 )
 
 func (a *App) CreateEmployeeRequest(ctx context.Context, r models.EmployeeRequest) (id int, err error) {
@@ -14,7 +14,7 @@ func (a *App) CreateEmployeeRequest(ctx context.Context, r models.EmployeeReques
 
 	id, err = a.db.CreateEmployeeRequest(ctx, r)
 	if err != nil {
-		log.Println("app CreateEmployeeRequest", err)
+		log.Error.Println("app CreateEmployeeRequest", err)
 	}
 	return
 }
@@ -26,7 +26,7 @@ func (a *App) GetEmployeeRequestByID(ctx context.Context, id int) (request model
 	request, err = a.db.GetRequestByID(ctx, id)
 	if err != nil {
 		if err != models.ErrNoRows {
-			log.Println("app GetEmployeeRequestByID", err)
+			log.Error.Println("app GetEmployeeRequestByID", err)
 		}
 	}
 	return
@@ -36,7 +36,7 @@ func (a *App) GetAllEmployeeRequests(ctx context.Context) (requests []models.Emp
 	requests, err = a.db.GetAllRequests(ctx)
 	if err != nil {
 		if err != models.ErrNoRows {
-			log.Println("app GetRequests", err)
+			log.Error.Println("app GetRequests", err)
 		}
 	}
 	return
@@ -48,7 +48,7 @@ func (a *App) UpdateEmployeeRequest(ctx context.Context, r models.EmployeeReques
 	}
 	err = a.db.UpdateEmployeeRequest(ctx, r)
 	if err != nil {
-		log.Println("app UpdateEmployeeRequest", err)
+		log.Error.Println("app UpdateEmployeeRequest", err)
 	}
 	return
 }
@@ -60,7 +60,7 @@ func (a *App) DeleteEmployeeRequest(ctx context.Context, id int) (err error) {
 
 	err = a.db.DeleteRequest(ctx, id)
 	if err != nil {
-		log.Println("app DeleteEmployeeRequest", err)
+		log.Error.Println("app DeleteEmployeeRequest", err)
 	}
 	return
 }

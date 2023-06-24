@@ -40,7 +40,7 @@ func (d *DB) GetEmployeeByID(ctx context.Context, id int) (e models.Employee, er
 	return
 }
 
-func (d *DB) GetEmployees(ctx context.Context) (employees []models.Employee, err error) {
+func (d *DB) GetAllEmployees(ctx context.Context) (employees []models.Employee, err error) {
 	rows, err := d.conn.Query(ctx,
 		`SELECT
 			id,

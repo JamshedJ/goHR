@@ -39,13 +39,9 @@ func (s *server) getPositionByID(c *gin.Context) {
 }
 
 func (s *server) getAllPositions(c *gin.Context) {
-<<<<<<< HEAD
-	positions, err := s.app.GetAllPositions(c.Request.Context())
-=======
 	_, isAdmin := c.Get("is_admin")
 
 	positions, err := s.app.GetAllPositions(c.Request.Context(), isAdmin)
->>>>>>> 53f4c62490a669c7617f897c1e2e393dd2e02c36
 	if err != nil {
 		replyError(c, err)
 		return

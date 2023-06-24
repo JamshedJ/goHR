@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/JamshedJ/goHR/internal/log"
-
 	"github.com/JamshedJ/goHR/internal/models"
 )
 

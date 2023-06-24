@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"errors"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,6 +12,7 @@ import (
 
 	"github.com/JamshedJ/goHR/internal/models"
 	"github.com/JamshedJ/goHR/internal/pkg/service"
+	"github.com/JamshedJ/goHR/internal/log"
 	"github.com/gin-gonic/gin"
 )
 
@@ -69,7 +69,7 @@ func replyError(c *gin.Context, err error) {
 	case models.ErrDuplicate:
 		c.JSON(http.StatusNotAcceptable, models.Duplicate)
 	default:
-		log.Println("http replyError unhandled error:", err)
+		log.Error.Println("http replyError unhandled error:", err)
 		c.JSON(http.StatusInternalServerError, models.InternalErr)
 	}
 	return

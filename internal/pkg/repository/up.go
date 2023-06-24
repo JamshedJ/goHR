@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/JamshedJ/goHR/internal/configs"
+	// "github.com/JamshedJ/goHR/internal/configs"
 )
 
 const (
@@ -50,22 +50,22 @@ const (
 
 	createEmployeeRequestsTable = `CREATE TABLE IF NOT EXISTS employee_requests
 	(
-		id              SERIAL 			PRIMARY KEY,
-    	employee_id     INT 			REFERENCES employees(id),
-    	starts_at      DATE 			NOT NULL,
-    	ends_at        DATE 			NOT NULL,
-    	reason          VARCHAR(255),
-    	type_id         INT 			NOT NULL REFERENCES employee_request_types(id)
+		id              			SERIAL 			PRIMARY KEY,
+    	employee_id     			INT 			REFERENCES employees(id),
+    	starts_at       			DATE 			NOT NULL,
+    	ends_at         			DATE 			NOT NULL,
+    	reason          			VARCHAR(255),
+    	employee_request_type_id    INT 			NOT NULL REFERENCES employee_request_types(id)
 	);`
 )
 
-var (
-	defaultAdminUsername = configs.AppSettings.AppParams.Login
-	defaultAdminPassword = configs.AppSettings.AppParams.SecretKey
+// var (
+// 	defaultAdminUsername = configs.AppSettings.AppParams.Login
+// 	defaultAdminPassword = configs.AppSettings.AppParams.SecretKey
 
-	createDefaultAdmin = fmt.Sprintf(`INSERT INTO users (username, password, role) VALUES ('%s', '%s', "admin");`,
-		defaultAdminUsername, defaultAdminPassword)
-)
+// 	createDefaultAdmin = fmt.Sprintf(`INSERT INTO users (username, password, role) VALUES ('%s', '%s', "admin");`,
+// 		defaultAdminUsername, defaultAdminPassword)
+// )
 
 var createTable = map[string]string{
 	"create_table_departments":            createDepartmentsTable,
@@ -74,7 +74,7 @@ var createTable = map[string]string{
 	"create_table_users":                  createUsersTable,
 	"create_table_employee_request_types": createEmployeeRequestTypesTable,
 	"create_table_employee_requests":      createEmployeeRequestsTable,
-	"create_user_admin_default":           createDefaultAdmin,
+	// "create_user_admin_default":           createDefaultAdmin,
 }
 
 func (d *DB) Up(ctx context.Context) error {

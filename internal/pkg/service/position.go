@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"log"
 
 	"github.com/JamshedJ/goHR/internal/models"
+	"github.com/JamshedJ/goHR/internal/log"
 )
 
 func (a *App) CreatePosition(ctx context.Context, p models.Position) (id int, err error) {
@@ -14,7 +14,7 @@ func (a *App) CreatePosition(ctx context.Context, p models.Position) (id int, er
 
 	id, err = a.db.CreatePosition(ctx, p)
 	if err != nil {
-		log.Println("app CreatePosition", err)
+		log.Error.Println("app CreatePosition", err)
 	}
 	return
 }
@@ -27,7 +27,7 @@ func (a *App) GetPositionByID(ctx context.Context, id int, isAdmin bool) (positi
 	position, err = a.db.GetPositionByID(ctx, id)
 	if err != nil {
 		if err != models.ErrNoRows {
-			log.Println("app GetPositionByID", err)
+			log.Error.Println("app GetPositionByID", err)
 		}
 		return
 	}
@@ -37,15 +37,11 @@ func (a *App) GetPositionByID(ctx context.Context, id int, isAdmin bool) (positi
 	return
 }
 
-<<<<<<< HEAD
-func (a *App) GetAllPositions(ctx context.Context) (positions []models.Position, err error) {
-=======
 func (a *App) GetAllPositions(ctx context.Context, isAdmin bool) (positions []models.Position, err error) {
->>>>>>> 53f4c62490a669c7617f897c1e2e393dd2e02c36
 	positions, err = a.db.GetAllPositions(ctx)
 	if err != nil {
 		if err != models.ErrNoRows {
-			log.Println("app GetAllPositions", err)
+			log.Error.Println("app GetAllPositions", err)
 		}
 		return
 	}
@@ -64,7 +60,7 @@ func (a *App) UpdatePosition(ctx context.Context, p models.Position) (err error)
 
 	err = a.db.UpdatePosition(ctx, p)
 	if err != nil {
-		log.Println("app UpdatePosition", err)
+		log.Error.Println("app UpdatePosition", err)
 	}
 	return
 }
@@ -76,7 +72,7 @@ func (a *App) DeletePosition(ctx context.Context, id int) (err error) {
 
 	err = a.db.DeletePosition(ctx, id)
 	if err != nil {
-		log.Println("app DeletePosition", err)
+		log.Error.Println("app DeletePosition", err)
 	}
 	return
 }

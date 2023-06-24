@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"log"
 
 	"github.com/JamshedJ/goHR/internal/models"
+	"github.com/JamshedJ/goHR/internal/log"
 )
 
 func (a *App) CreateEmployeeRequestType(ctx context.Context, e models.EmployeeRequestType) (id int, err error) {
@@ -13,7 +13,7 @@ func (a *App) CreateEmployeeRequestType(ctx context.Context, e models.EmployeeRe
 	}
 	id, err = a.db.CreateEmployeeRequestType(ctx, e)
 	if err != nil {
-		log.Println("app CreateEmployeeRequestType", err)
+		log.Error.Println("app CreateEmployeeRequestType", err)
 	}
 	return
 }
@@ -25,7 +25,7 @@ func (a *App) GetEmployeeRequestTypeByID(ctx context.Context, id int) (erTypes m
 	erTypes, err = a.db.GetEmployeeRequestTypeByID(ctx, id)
 	if err != nil {
 		if err != models.ErrNoRows {
-			log.Println("app GetEmployeeRequestTypeByID", err)
+			log.Error.Println("app GetEmployeeRequestTypeByID", err)
 		}
 	}
 	return
@@ -35,7 +35,7 @@ func (a *App) GetAllEmployeeRequestTypes(ctx context.Context) (erTypes []models.
 	erTypes, err = a.db.GetAllEmployeeRequestTypes(ctx)
 	if err != nil {
 		if err != models.ErrNoRows {
-			log.Println("app GetAllEmployeeRequestTypes", err)
+			log.Error.Println("app GetAllEmployeeRequestTypes", err)
 		}
 	}
 	return
@@ -47,7 +47,7 @@ func (a *App) UpdateEmployeeRequestType(ctx context.Context, e models.EmployeeRe
 	}
 	err = a.db.UpdateEmployeeRequestType(ctx, e)
 	if err != nil {
-		log.Println("app UpdateEmployeeRequestType", err)
+		log.Error.Println("app UpdateEmployeeRequestType", err)
 	}
 	return
 }
@@ -59,7 +59,7 @@ func (a *App) DeleteEmployeeRequestType(ctx context.Context, id int) (err error)
 
 	err = a.db.DeleteEmployeeRequestType(ctx, id)
 	if err != nil {
-		log.Println("app DeleteEmployeeRequestType", err)
+		log.Error.Println("app DeleteEmployeeRequestType", err)
 	}
 	return
 }

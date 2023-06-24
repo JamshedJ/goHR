@@ -4,10 +4,10 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/JamshedJ/goHR/internal/models"
+	"github.com/JamshedJ/goHR/internal/log"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -27,7 +27,7 @@ func (a *App) GenerateToken(ctx context.Context, u models.User) (string, error) 
 		if err == models.ErrNoRows {
 			return "", models.ErrUnauthorized
 		}
-		log.Println("GenerateToken a.db.AuthenticateUser", err)
+		log.Error.Println("GenerateToken a.db.AuthenticateUser", err)
 		return "", err
 	}
 
@@ -46,7 +46,7 @@ func (a *App) ParseToken(jwtString string) (user models.User, err error) {
 	var claims models.JWTClaims
 	token, err := jwt.ParseWithClaims(jwtString, &claims, func(token *jwt.Token) (interface{}, error) {
 		if sm, ok := token.Method.(*jwt.SigningMethodHMAC); !ok || sm.Name != "HS256" {
-			log.Println("app ParseToken jwt.ParseWithClaims incorrect signing method", sm.Name)
+			log.Debug.Println("app ParseToken jwt.ParseWithClaims incorrect signing method", sm.Name)
 			return nil, models.ErrUnauthorized
 		}
 		return []byte(signingKey), nil

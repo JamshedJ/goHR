@@ -36,8 +36,8 @@ func (a *App) GetEmployeeByID(ctx context.Context, id int, isAdmin bool) (employ
 	return
 }
 
-func (a *App) GetEmployees(ctx context.Context, isAdmin bool) (employees []models.Employee, err error) {
-	employees, err = a.db.GetEmployees(ctx)
+func (a *App) GetAllEmployees(ctx context.Context, isAdmin bool) (employees []models.Employee, err error) {
+	employees, err = a.db.GetAllEmployees(ctx)
 	if err != nil {
 		if err != models.ErrNoRows {
 			log.Error.Println("app GetEmployees", err)

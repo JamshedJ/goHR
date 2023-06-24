@@ -39,10 +39,10 @@ func (s *server) getEmployeeByID(c *gin.Context) {
 	c.JSON(http.StatusOK, employee)
 }
 
-func (s *server) getEmployees(c *gin.Context) {
+func (s *server) getAllEmployees(c *gin.Context) {
 	_, isAdmin := c.Get("is_admin")
 
-	employees, err := s.app.GetEmployees(c.Request.Context(), isAdmin)
+	employees, err := s.app.GetAllEmployees(c.Request.Context(), isAdmin)
 	if err != nil {
 		replyError(c, err)
 		return
