@@ -15,6 +15,8 @@ var (
 type app struct {
 	URL           string `json:"url"`
 	Version       string `json:"version"`
+	AdminUsername string `json:"admin_username"`
+	AdminPassword string `json:"admin_password"`
 	Salt          string `json:"salt"`
 	SignKey       string `json:"sign_key"`
 	TokenTTLHours int    `json:"token_ttl_hours"`

@@ -19,16 +19,18 @@ var (
 )
 
 func (s *Service) GenerateToken(ctx context.Context, u models.User) (string, error) {
-	if !u.Validate() {
-		return "", models.ErrBadRequest
+	if err := u.Validate(); err != nil {
+		log.Warning.Println("service GenerateToken", err)
+		return "", err
 	}
 	u.Password = generatePasswordHash(u.Password)
 	err := s.db.AuthenticateUser(ctx, &u)
 	if err != nil {
 		if err == models.ErrNoRows {
+			log.Warning.Println("service GenerateToken s.db.AuthenticateUser", err)
 			return "", models.ErrUnauthorized
 		}
-		log.Error.Println("GenerateToken s.db.AuthenticateUser", err)
+		log.Error.Println("service GenerateToken s.db.AuthenticateUser", err)
 		return "", err
 	}
 
@@ -47,7 +49,7 @@ func (s *Service) ParseToken(jwtString string) (user models.User, err error) {
 	var claims models.JWTClaims
 	token, err := jwt.ParseWithClaims(jwtString, &claims, func(token *jwt.Token) (interface{}, error) {
 		if sm, ok := token.Method.(*jwt.SigningMethodHMAC); !ok || sm.Name != "HS256" {
-			log.Debug.Println("app ParseToken jwt.ParseWithClaims incorrect signing method", sm.Name)
+			log.Debug.Println("service ParseToken jwt.ParseWithClaims incorrect signing method", sm.Name)
 			return nil, models.ErrUnauthorized
 		}
 		return []byte(signingKey), nil

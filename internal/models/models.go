@@ -10,7 +10,6 @@ import (
 var (
 	ErrNoRows       = errors.New("no rows in result set")
 	ErrDuplicate    = errors.New("duplicate")
-	ErrBadRequest   = errors.New("bad request")
 	ErrUnauthorized = errors.New("unauthorized")
 
 	OK           = map[string]string{"message": "success"}
@@ -20,9 +19,20 @@ var (
 	InternalErr  = map[string]string{"message": "internal server error"}
 	Unauthorized = map[string]string{"message": "unauthorized"}
 
-	RoleAdmin = "admin"
-	RoleUser  = "user"
+	roleAdmin = "admin"
 )
+
+type ErrorBadRequest struct {
+	Message string `json:"message"`
+}
+
+func (e ErrorBadRequest) Error() string {
+	return e.Message
+}
+
+func NewErrorBadRequest(msg string) ErrorBadRequest {
+	return ErrorBadRequest{msg}
+}
 
 type Employee struct {
 	ID             int     `json:"id,omitempty"`
@@ -34,26 +44,26 @@ type Employee struct {
 	Salary         float64 `json:"salary,omitempty"`
 }
 
-func (e *Employee) Validate() bool {
+func (e *Employee) Validate() error {
 	if len(e.FirstName) < 3 || len(e.FirstName) > 255 {
-		return false
+		return NewErrorBadRequest("invalid first_name")
 	}
 	if len(e.LastName) < 3 || len(e.LastName) > 255 {
-		return false
+		return NewErrorBadRequest("invalid last_name")
 	}
 	if e.PositionID <= 0 {
-		return false
+		return NewErrorBadRequest("invalid position_id")
 	}
 	if e.DepartmentID <= 0 {
-		return false
+		return NewErrorBadRequest("invalid department_id")
 	}
 	if _, err := time.Parse("2006-01-02", e.EmploymentDate); err != nil {
-		return false
+		return NewErrorBadRequest("invalid employment_date")
 	}
 	if e.Salary < 0 {
-		return false
+		return NewErrorBadRequest("invalid salary")
 	}
-	return true
+	return nil
 }
 
 type Department struct {
@@ -62,17 +72,17 @@ type Department struct {
 	DepartmentHead string `json:"department_head"`
 }
 
-func (d *Department) Validate() bool {
+func (d *Department) Validate() error {
 	if d.ID < 0 {
-		return false
+		return NewErrorBadRequest("invalid id")
 	}
 	if len(d.Title) > 255 {
-		return false
+		return NewErrorBadRequest("invalid title")
 	}
 	if len(d.DepartmentHead) > 255 {
-		return false
+		return NewErrorBadRequest("invalid department_head")
 	}
-	return true
+	return nil
 }
 
 type Position struct {
@@ -82,17 +92,17 @@ type Position struct {
 	Qualification string  `json:"qualification"`
 }
 
-func (p *Position) Validate() bool {
+func (p *Position) Validate() error {
 	if len(p.Title) > 255 {
-		return false
+		return NewErrorBadRequest("invalid title")
 	}
 	if len(p.Qualification) > 255 {
-		return false
+		return NewErrorBadRequest("invalid qualification")
 	}
 	if p.Salary < 0 {
-		return false
+		return NewErrorBadRequest("invalid salary")
 	}
-	return true
+	return nil
 }
 
 type EmployeeRequest struct {
@@ -104,26 +114,26 @@ type EmployeeRequest struct {
 	EmployeeRequestTypeID int    `json:"employee_request_type_id"`
 }
 
-func (e *EmployeeRequest) Validate() bool {
+func (e *EmployeeRequest) Validate() error {
 	if e.ID < 0 {
-		return false
+		return NewErrorBadRequest("invalid id")
 	}
 	if e.EmployeeID <= 0 {
-		return false
+		return NewErrorBadRequest("invalid employee_id")
 	}
 	if _, err := time.Parse("2006-01-02", e.StartsAt); err != nil {
-		return false
+		return NewErrorBadRequest("invalid starts_at")
 	}
 	if _, err := time.Parse("2006-01-02", e.EndsAt); err != nil {
-		return false
+		return NewErrorBadRequest("invalid ends_at")
 	}
 	if len(e.Reason) > 255 {
-		return false
+		return NewErrorBadRequest("invalid_reason")
 	}
 	if e.EmployeeRequestTypeID <= 0 {
-		return false
+		return NewErrorBadRequest("invalid employee_request_type_id")
 	}
-	return true
+	return nil
 }
 
 type EmployeeRequestType struct {
@@ -131,14 +141,14 @@ type EmployeeRequestType struct {
 	Title string `json:"title"`
 }
 
-func (e *EmployeeRequestType) Validate() bool {
+func (e *EmployeeRequestType) Validate() error {
 	if e.ID < 0 {
-		return false
+		return NewErrorBadRequest("invalid id")
 	}
 	if len(e.Title) > 255 {
-		return false
+		return NewErrorBadRequest("invalid title")
 	}
-	return true
+	return nil
 }
 
 type User struct {
@@ -148,23 +158,23 @@ type User struct {
 	Role     string `json:"role,omitempty"`
 }
 
-func (u *User) Validate() bool {
+func (u *User) Validate() error {
 	if len(u.Username) < 3 || len(u.Username) > 256 {
-		return false
+		return NewErrorBadRequest("invalid username")
 	}
 	if len(u.Password) < 4 || len(u.Password) > 256 {
-		return false
+		return NewErrorBadRequest("invalid password")
 	}
 	if u.Role != "" {
 		if u.Role != "user" && u.Role != "admin" {
-			return false
+			return NewErrorBadRequest("invalid user role")
 		}
 	}
-	return true
+	return nil
 }
 
 func (u *User) IsAdmin() bool {
-	return u.Role == RoleAdmin
+	return u.Role == roleAdmin
 }
 
 type JWTClaims struct {

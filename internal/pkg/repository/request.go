@@ -20,8 +20,8 @@ func (d *DB) GetRequestByID(ctx context.Context, id int) (e models.EmployeeReque
 		`SELECT
 			id,
 			employee_id,
-			starts_at,
-			ends_at,
+			TO_CHAR(starts_at, 'YYYY-MM-DD HH24:MI:SS'),
+			TO_CHAR(ends_at, 'YYYY-MM-DD HH24:MI:SS'),
 			reason,
 			type_id
 		FROM employee_requests
@@ -43,8 +43,8 @@ func (d *DB) GetAllRequests(ctx context.Context) (requests []models.EmployeeRequ
 		`SELECT
 			id,
 			employee_id,
-			starts_at,
-			ends_at,
+			TO_CHAR(starts_at, 'YYYY-MM-DD HH24:MI:SS'),
+			TO_CHAR(ends_at, 'YYYY-MM-DD HH24:MI:SS'),
 			reason,
 			type_id
 		FROM employee_requests;`)

@@ -50,7 +50,7 @@ func (s *server) updateEmployeeRequest(c *gin.Context) {
 	var r models.EmployeeRequest
 	err := c.BindJSON(&r)
 	if err != nil {
-		replyError(c, err)
+		c.JSON(http.StatusBadRequest, models.BadRequest)
 		return
 	}
 

@@ -54,7 +54,7 @@ func (s *server) updateEmployee(c *gin.Context) {
 	var e models.Employee
 	err := c.BindJSON(&e)
 	if err != nil {
-		replyError(c, err)
+		c.JSON(http.StatusBadRequest, models.BadRequest)
 		return
 	}
 	e.ID, err = getParamInt(c, "id")

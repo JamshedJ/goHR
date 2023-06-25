@@ -59,18 +59,23 @@ func Run(ctx context.Context, service *service.Service, addr string) error {
 }
 
 func replyError(c *gin.Context, err error) {
-	switch err {
-	case models.ErrUnauthorized:
-		c.JSON(http.StatusUnauthorized, models.Unauthorized)
-	case models.ErrBadRequest:
-		c.JSON(http.StatusBadRequest, models.BadRequest)
-	case models.ErrNoRows:
-		c.JSON(http.StatusNotFound, models.NotFound)
-	case models.ErrDuplicate:
-		c.JSON(http.StatusNotAcceptable, models.Duplicate)
+	switch err.(type) {
+	case models.ErrorBadRequest:
+		c.JSON(http.StatusBadRequest, err)
 	default:
-		log.Error.Println("http replyError unhandled error:", err)
-		c.JSON(http.StatusInternalServerError, models.InternalErr)
+		switch err {
+		case models.ErrUnauthorized:
+			c.JSON(http.StatusUnauthorized, models.Unauthorized)
+		// case models.ErrBadRequest:
+		// 	c.JSON(http.StatusBadRequest, models.BadRequest)
+		case models.ErrNoRows:
+			c.JSON(http.StatusNotFound, models.NotFound)
+		case models.ErrDuplicate:
+			c.JSON(http.StatusNotAcceptable, models.Duplicate)
+		default:
+			log.Error.Println("http replyError unhandled error:", err)
+			c.JSON(http.StatusInternalServerError, models.InternalErr)
+		}
 	}
 	return
 }
@@ -78,25 +83,13 @@ func replyError(c *gin.Context, err error) {
 func getParamInt(c *gin.Context, param string) (val int, err error) {
 	idStr, ok := c.Params.Get(param)
 	if !ok {
-		err = models.ErrBadRequest
+		err = models.NewErrorBadRequest("no param provided")
 		return
 	}
 	val, err = strconv.Atoi(idStr)
 	if err != nil {
-		err = models.ErrBadRequest
+		err = models.NewErrorBadRequest("invalid param")
 		return
-	}
-	return
-}
-
-func getUserFromContext(c *gin.Context) (user models.User, err error) {
-	u, ok := c.Get("user")
-	if !ok {
-		return user, models.ErrUnauthorized
-	}
-	user, ok = u.(models.User)
-	if !ok {
-		return user, models.ErrUnauthorized
 	}
 	return
 }

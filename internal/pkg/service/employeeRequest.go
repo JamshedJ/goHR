@@ -8,26 +8,31 @@ import (
 )
 
 func (s *Service) CreateEmployeeRequest(ctx context.Context, r models.EmployeeRequest) (id int, err error) {
-	if !r.Validate() {
-		return 0, models.ErrBadRequest
+	if err = r.Validate(); err != nil {
+		log.Warning.Println("service CreateEmployeeRequest", err)
+		return
 	}
 
 	id, err = s.db.CreateEmployeeRequest(ctx, r)
 	if err != nil {
-		log.Error.Println("app CreateEmployeeRequest", err)
+		log.Error.Println("service CreateEmployeeRequest", err)
 	}
 	return
 }
 
 func (s *Service) GetEmployeeRequestByID(ctx context.Context, id int) (request models.EmployeeRequest, err error) {
 	if id <= 0 {
-		return request, models.ErrBadRequest
+		err = models.NewErrorBadRequest("invalid id")
+		log.Warning.Println("service GetEmployeeRequestByID", err)
+		return
 	}
 	request, err = s.db.GetRequestByID(ctx, id)
 	if err != nil {
-		if err != models.ErrNoRows {
-			log.Error.Println("app GetEmployeeRequestByID", err)
+		if err == models.ErrNoRows {
+			log.Warning.Println("service GetEmployeeRequestByID", err)
+			return
 		}
+		log.Error.Println("service GetEmployeeRequestByID", err)
 	}
 	return
 }
@@ -35,32 +40,37 @@ func (s *Service) GetEmployeeRequestByID(ctx context.Context, id int) (request m
 func (s *Service) GetAllEmployeeRequests(ctx context.Context) (requests []models.EmployeeRequest, err error) {
 	requests, err = s.db.GetAllRequests(ctx)
 	if err != nil {
-		if err != models.ErrNoRows {
-			log.Error.Println("app GetRequests", err)
+		if err == models.ErrNoRows {
+			log.Warning.Println("service GetAllEmployeeRequests", err)
+			return
 		}
+		log.Error.Println("service GetAllEmployeeRequests", err)
 	}
 	return
 }
 
 func (s *Service) UpdateEmployeeRequest(ctx context.Context, r models.EmployeeRequest) (err error) {
-	if !r.Validate() {
-		return models.ErrBadRequest
+	if err = r.Validate(); err != nil {
+		log.Warning.Println("service UpdateEmployeeRequest", err)
+		return
 	}
 	err = s.db.UpdateEmployeeRequest(ctx, r)
 	if err != nil {
-		log.Error.Println("app UpdateEmployeeRequest", err)
+		log.Error.Println("service UpdateEmployeeRequest", err)
 	}
 	return
 }
 
 func (s *Service) DeleteEmployeeRequest(ctx context.Context, id int) (err error) {
 	if id <= 0 {
-		return models.ErrBadRequest
+		err = models.NewErrorBadRequest("invalid id")
+		log.Warning.Println("service DeleteEmployeeRequest", err)
+		return
 	}
 
 	err = s.db.DeleteRequest(ctx, id)
 	if err != nil {
-		log.Error.Println("app DeleteEmployeeRequest", err)
+		log.Error.Println("service DeleteEmployeeRequest", err)
 	}
 	return
 }

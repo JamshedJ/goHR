@@ -50,7 +50,7 @@ func (s *server) updateDepartment(c *gin.Context) {
 	var d models.Department
 	err := c.BindJSON(&d)
 	if err != nil {
-		replyError(c, err)
+		c.JSON(http.StatusBadRequest, models.BadRequest)
 		return
 	}
 

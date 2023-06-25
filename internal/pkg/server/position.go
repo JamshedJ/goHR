@@ -53,7 +53,7 @@ func (s *server) updatePosition(c *gin.Context) {
 	var p models.Position
 	err := c.BindJSON(&p)
 	if err != nil {
-		replyError(c, err)
+		c.JSON(http.StatusBadRequest, models.BadRequest)
 		return
 	}
 
