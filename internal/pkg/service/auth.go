@@ -2,8 +2,6 @@ package service
 
 import (
 	"context"
-	"crypto/sha256"
-	"fmt"
 	"time"
 
 	"github.com/JamshedJ/goHR/internal/configs"
@@ -12,18 +10,17 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var (
-	salt       = configs.App.Salt
-	signingKey = configs.App.SignKey
-	tokenTTL   = time.Duration(configs.App.TokenTTLHours) * time.Hour
-)
+//var (
+//	salt       = configs.App.Salt
+//)
 
 func (s *Service) GenerateToken(ctx context.Context, u models.User) (string, error) {
+
 	if err := u.Validate(); err != nil {
 		log.Warning.Println("service GenerateToken", err)
 		return "", err
 	}
-	u.Password = generatePasswordHash(u.Password)
+	u.Password = models.GeneratePasswordHash(u.Password)
 	err := s.db.AuthenticateUser(ctx, &u)
 	if err != nil {
 		if err == models.ErrNoRows {
@@ -34,6 +31,7 @@ func (s *Service) GenerateToken(ctx context.Context, u models.User) (string, err
 		return "", err
 	}
 
+	tokenTTL := time.Duration(configs.App.TokenTTLHours) * time.Hour
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &models.JWTClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenTTL)),
@@ -42,7 +40,7 @@ func (s *Service) GenerateToken(ctx context.Context, u models.User) (string, err
 		User: u,
 	})
 
-	return token.SignedString([]byte(signingKey))
+	return token.SignedString([]byte(configs.App.SignKey))
 }
 
 func (s *Service) ParseToken(jwtString string) (user models.User, err error) {
@@ -52,17 +50,10 @@ func (s *Service) ParseToken(jwtString string) (user models.User, err error) {
 			log.Debug.Println("service ParseToken jwt.ParseWithClaims incorrect signing method", sm.Name)
 			return nil, models.ErrUnauthorized
 		}
-		return []byte(signingKey), nil
+		return []byte(configs.App.SignKey), nil
 	})
 	if err != nil || !token.Valid {
 		return user, models.ErrUnauthorized
 	}
 	return claims.User, nil
-}
-
-func generatePasswordHash(password string) string {
-	hash := sha256.New()
-	hash.Write([]byte(password))
-
-	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }

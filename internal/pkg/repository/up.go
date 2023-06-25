@@ -3,8 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
-	// "github.com/JamshedJ/goHR/internal/configs"
-
+	"github.com/JamshedJ/goHR/internal/models"
 	"github.com/JamshedJ/goHR/internal/configs"
 )
 
@@ -50,30 +49,31 @@ const (
     	reason          			VARCHAR(255),
     	employee_request_type_id    INT 			NOT NULL REFERENCES employee_request_types(id)
 	);`
-)
 
-var (
-	createAndInsertTableUsers = fmt.Sprintf(
-		`CREATE TABLE IF NOT EXISTS users (
+	createUsersTable = `CREATE TABLE IF NOT EXISTS users (
 			id              SERIAL 			PRIMARY KEY,
-			username        VARCHAR(255) 	NOT NULL,
+			username        VARCHAR(255) 	NOT NULL UNIQUE,
 			password        VARCHAR(255) 	NOT NULL,
 			role            VARCHAR(50) 	DEFAULT 'user' -- admin, user
-		);
-		INSERT INTO users (username, password, role) VALUES ('%s', '%s', 'admin');`,
-		configs.App.AdminUsername, configs.App.AdminPassword)
+		);`
 )
 
-var commandList = []map[string]string{
-	{"create_table_departments": createDepartmentsTable},
-	{"create_table_positions": createPositionsTable},
-	{"create_table_employees": createEmployeesTable},
-	{"create_table_employee_request_types": createEmployeeRequestTypesTable},
-	{"create_table_employee_requests": createEmployeeRequestsTable},
-	{"create_user_admin_default": createAndInsertTableUsers},
-}
-
 func (d *DB) Up(ctx context.Context) error {
+	var commandList = []map[string]string{
+		{"create_table_departments": createDepartmentsTable},
+		{"create_table_positions": createPositionsTable},
+		{"create_table_employees": createEmployeesTable},
+		{"create_table_employee_request_types": createEmployeeRequestTypesTable},
+		{"create_table_employee_requests": createEmployeeRequestsTable},
+		{"create_user_admin_default": createUsersTable},
+
+		{"create_default_admin": fmt.Sprintf(
+			`INSERT INTO users (username, password, role) 
+			VALUES ('%s', '%s', 'admin')
+			ON CONFLICT (username) DO NOTHING;`,
+			configs.App.AdminUsername, models.GeneratePasswordHash(configs.App.AdminPassword))},
+	}
+
 	for _, command := range commandList {
 		for name, query := range command {
 			_, err := d.conn.Exec(ctx, query)

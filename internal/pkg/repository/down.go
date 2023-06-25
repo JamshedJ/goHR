@@ -6,28 +6,30 @@ import (
 )
 
 const (
-	dropDepartmentsTable          = `DROP TABLE IF EXIST departments;`
-	dropPositionsTable            = `DROP TABLE IF EXIST positions;`
-	dropEmployeesTable            = `DROP TABLE IF EXIST employees;`
-	dropUsersTable                = `DROP TABLE IF EXIST users;`
-	dropEmployeeRequestTypesTable = `DROP TABLE IF EXIST employee_request_types;`
-	dropEmployeeRequestsTable     = `DROP TABLE IF EXIST employee_requests;`
+	dropUsersTable                = `DROP TABLE IF EXISTS users;`
+	dropEmployeeRequestsTable     = `DROP TABLE IF EXISTS employee_requests;`
+	dropEmployeeRequestTypesTable = `DROP TABLE IF EXISTS employee_request_types;`
+	dropEmployeesTable            = `DROP TABLE IF EXISTS employees;`
+	dropPositionsTable            = `DROP TABLE IF EXISTS positions;`
+	dropDepartmentsTable          = `DROP TABLE IF EXISTS departments;`
 )
 
-var dropTables = map[string]string{
-	"departments":            dropDepartmentsTable,
-	"positions":              dropPositionsTable,
-	"employees":              dropEmployeesTable,
-	"users":                  dropUsersTable,
-	"employee_request_types": dropEmployeeRequestTypesTable,
-	"employee_requests":      dropEmployeeRequestsTable,
-}
-
 func (d *DB) Down(ctx context.Context) error {
-	for tableName, query := range dropTables {
-		_, err := d.conn.Exec(ctx, query)
-		if err != nil {
-			return fmt.Errorf("error occurred while dropping table %q: %w", tableName, err)
+	var dropTables = []map[string]string{
+		{"users": dropUsersTable},
+		{"employee_requests": dropEmployeeRequestsTable},
+		{"employee_request_types": dropEmployeeRequestTypesTable},
+		{"employees": dropEmployeesTable},
+		{"positions": dropPositionsTable},
+		{"departments": dropDepartmentsTable},
+	}
+
+	for _, drop := range dropTables {
+		for name, query := range drop {
+			_, err := d.conn.Exec(ctx, query)
+			if err != nil {
+				return fmt.Errorf("error occurred while dropping table %q: %w", name, err)
+			}
 		}
 	}
 	return nil

@@ -31,7 +31,7 @@ func main() {
 	}
 
 	// if err := db.Down(ctx); err != nil {
-	// 	log.Fatal("Error while dropping tables: ", err)
+	// 	log.Error.Fatal("Error while dropping tables: ", err)
 	// 	return
 	// }
 

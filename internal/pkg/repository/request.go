@@ -9,7 +9,7 @@ import (
 
 func (d *DB) CreateEmployeeRequest(ctx context.Context, r models.EmployeeRequest) (id int, err error) {
 	err = d.conn.QueryRow(ctx,
-		`INSERT INTO employee_requests (employee_id, starts_at, ends_at, reason, type_id) 
+		`INSERT INTO employee_requests (employee_id, starts_at, ends_at, reason, employee_request_type_id) 
 		VAlUES ($1, $2, $3, $4, $5) RETURNING id;`,
 		r.EmployeeID, r.StartsAt, r.EndsAt, r.Reason, r.EmployeeRequestTypeID).Scan(&id)
 	return
@@ -23,7 +23,7 @@ func (d *DB) GetRequestByID(ctx context.Context, id int) (e models.EmployeeReque
 			TO_CHAR(starts_at, 'YYYY-MM-DD HH24:MI:SS'),
 			TO_CHAR(ends_at, 'YYYY-MM-DD HH24:MI:SS'),
 			reason,
-			type_id
+			employee_request_type_id
 		FROM employee_requests
 		WHERE id = $1;`, id).Scan(
 		&e.ID,
@@ -46,7 +46,7 @@ func (d *DB) GetAllRequests(ctx context.Context) (requests []models.EmployeeRequ
 			TO_CHAR(starts_at, 'YYYY-MM-DD HH24:MI:SS'),
 			TO_CHAR(ends_at, 'YYYY-MM-DD HH24:MI:SS'),
 			reason,
-			type_id
+			employee_request_type_id
 		FROM employee_requests;`)
 	if err != nil {
 		return
@@ -78,7 +78,7 @@ func (d *DB) UpdateEmployeeRequest(ctx context.Context, e models.EmployeeRequest
 			starts_at = $3,
 			ends_at = $4,
 			reason = $5,
-			type_id = $6
+			employee_request_type_id = $6
 		WHERE id = $1;`,
 		e.ID,
 		e.EmployeeID,

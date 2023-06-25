@@ -1,7 +1,10 @@
 package models
 
 import (
+	"crypto/sha256"
 	"errors"
+	"fmt"
+	"github.com/JamshedJ/goHR/internal/configs"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -180,4 +183,11 @@ func (u *User) IsAdmin() bool {
 type JWTClaims struct {
 	jwt.RegisteredClaims
 	User User
+}
+
+func GeneratePasswordHash(password string) string {
+	hash := sha256.New()
+	hash.Write([]byte(password))
+
+	return fmt.Sprintf("%x", hash.Sum([]byte(configs.App.Salt)))
 }

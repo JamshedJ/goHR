@@ -42,7 +42,7 @@ func (s *Service) AddUser(ctx context.Context, u models.User) (err error) {
 		log.Warning.Println("service AddUser", err)
 		return
 	}
-	u.Password = generatePasswordHash(u.Password)
+	u.Password = models.GeneratePasswordHash(u.Password)
 	err = s.db.CreateUser(ctx, u)
 	if err != nil {
 		log.Error.Println("service AddUser", err)

@@ -36,7 +36,7 @@ func Init() (err error) {
 	level = make(map[logLevel]*log.Logger)
 
 	foldername := configs.Logger.FolderName
-	if err = os.Mkdir(foldername, 0777); err != nil && err.Error() != "mkdir logs: file exists" {
+	if err = os.Mkdir(foldername, 0777); err != nil && err.Error() != "mkdir logs: Cannot create a file when that file already exists." {
 		return fmt.Errorf("logger Init: error creating %s directory: %w", foldername, err)
 	}
 
