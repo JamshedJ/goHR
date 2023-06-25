@@ -1,4 +1,4 @@
-package handler
+package server
 
 import (
 	"net/http"
@@ -14,7 +14,7 @@ func (s *server) createEmployeeRequest(c *gin.Context) {
 		return
 	}
 
-	id, err := s.app.CreateEmployeeRequest(c.Request.Context(), r)
+	id, err := s.service.CreateEmployeeRequest(c.Request.Context(), r)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -29,7 +29,7 @@ func (s *server) getEmployeeRequestByID(c *gin.Context) {
 		return
 	}
 
-	employee, err := s.app.GetEmployeeRequestByID(c.Request.Context(), id)
+	employee, err := s.service.GetEmployeeRequestByID(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -38,7 +38,7 @@ func (s *server) getEmployeeRequestByID(c *gin.Context) {
 }
 
 func (s *server) getAllEmployeeRequests(c *gin.Context) {
-	requests, err := s.app.GetAllEmployeeRequests(c.Request.Context())
+	requests, err := s.service.GetAllEmployeeRequests(c.Request.Context())
 	if err != nil {
 		replyError(c, err)
 		return
@@ -60,7 +60,7 @@ func (s *server) updateEmployeeRequest(c *gin.Context) {
 		return
 	}
 
-	err = s.app.UpdateEmployeeRequest(c.Request.Context(), r)
+	err = s.service.UpdateEmployeeRequest(c.Request.Context(), r)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -75,7 +75,7 @@ func (s *server) deleteEmployeeRequest(c *gin.Context) {
 		return
 	}
 
-	err = s.app.DeleteEmployeeRequest(c.Request.Context(), id)
+	err = s.service.DeleteEmployeeRequest(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return

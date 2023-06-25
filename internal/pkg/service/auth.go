@@ -6,28 +6,29 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/JamshedJ/goHR/internal/models"
+	"github.com/JamshedJ/goHR/internal/configs"
 	"github.com/JamshedJ/goHR/internal/log"
+	"github.com/JamshedJ/goHR/internal/models"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-const (
-	salt       = "hjqrhjqw124617ajfhajs"
-	signingKey = "qrkjk#4#%35FSFJlja#4353KSFjH"
-	tokenTTL   = 12 * time.Hour
+var (
+	salt       = configs.App.Salt
+	signingKey = configs.App.SignKey
+	tokenTTL   = time.Duration(configs.App.TokenTTLHours) * time.Hour
 )
 
-func (a *App) GenerateToken(ctx context.Context, u models.User) (string, error) {
+func (s *Service) GenerateToken(ctx context.Context, u models.User) (string, error) {
 	if !u.Validate() {
 		return "", models.ErrBadRequest
 	}
 	u.Password = generatePasswordHash(u.Password)
-	err := a.db.AuthenticateUser(ctx, &u)
+	err := s.db.AuthenticateUser(ctx, &u)
 	if err != nil {
 		if err == models.ErrNoRows {
 			return "", models.ErrUnauthorized
 		}
-		log.Error.Println("GenerateToken a.db.AuthenticateUser", err)
+		log.Error.Println("GenerateToken s.db.AuthenticateUser", err)
 		return "", err
 	}
 
@@ -42,7 +43,7 @@ func (a *App) GenerateToken(ctx context.Context, u models.User) (string, error) 
 	return token.SignedString([]byte(signingKey))
 }
 
-func (a *App) ParseToken(jwtString string) (user models.User, err error) {
+func (s *Service) ParseToken(jwtString string) (user models.User, err error) {
 	var claims models.JWTClaims
 	token, err := jwt.ParseWithClaims(jwtString, &claims, func(token *jwt.Token) (interface{}, error) {
 		if sm, ok := token.Method.(*jwt.SigningMethodHMAC); !ok || sm.Name != "HS256" {

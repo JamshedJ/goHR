@@ -1,4 +1,4 @@
-package handler
+package server
 
 import (
 	"net/http"
@@ -14,7 +14,7 @@ func (s *server) createEmployeeRequestType(c *gin.Context) {
 		return
 	}
 
-	id, err := s.app.CreateEmployeeRequestType(c.Request.Context(), e)
+	id, err := s.service.CreateEmployeeRequestType(c.Request.Context(), e)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -29,7 +29,7 @@ func (s *server) getEmployeeRequestTypeByID(c *gin.Context) {
 		return
 	}
 
-	erType, err := s.app.GetEmployeeRequestTypeByID(c.Request.Context(), id)
+	erType, err := s.service.GetEmployeeRequestTypeByID(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -38,7 +38,7 @@ func (s *server) getEmployeeRequestTypeByID(c *gin.Context) {
 }
 
 func (s *server) getAllEmployeerequestTypes(c *gin.Context) {
-	employeeRequestTypes, err := s.app.GetAllEmployeeRequestTypes(c.Request.Context())
+	employeeRequestTypes, err := s.service.GetAllEmployeeRequestTypes(c.Request.Context())
 	if err != nil {
 		replyError(c, err)
 		return
@@ -60,7 +60,7 @@ func (s *server) updateEmployeeRequestType(c *gin.Context) {
 		return
 	}
 
-	err = s.app.UpdateEmployeeRequestType(c.Request.Context(), t)
+	err = s.service.UpdateEmployeeRequestType(c.Request.Context(), t)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -75,7 +75,7 @@ func (s *server) deleteEmployeeRequestType(c *gin.Context) {
 		return
 	}
 
-	err = s.app.DeleteEmployeeRequestType(c.Request.Context(), id)
+	err = s.service.DeleteEmployeeRequestType(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return

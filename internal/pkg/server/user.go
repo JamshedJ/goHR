@@ -1,4 +1,4 @@
-package handler
+package server
 
 import (
 	"net/http"
@@ -14,7 +14,7 @@ func (s *server) getUserById(c *gin.Context) {
 		return
 	}
 
-	user, err := s.app.GetUserById(c.Request.Context(), id)
+	user, err := s.service.GetUserById(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -23,7 +23,7 @@ func (s *server) getUserById(c *gin.Context) {
 }
 
 func (s *server) getAllUsers(c *gin.Context) {
-	users, err := s.app.GetAllUsers(c.Request.Context())
+	users, err := s.service.GetAllUsers(c.Request.Context())
 	if err != nil {
 		replyError(c, err)
 		return
@@ -44,7 +44,7 @@ func (s *server) updateUser(c *gin.Context) {
 		return
 	}
 
-	err = s.app.UpdateUser(c.Request.Context(), user)
+	err = s.service.UpdateUser(c.Request.Context(), user)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -59,7 +59,7 @@ func (s *server) deleteUser(c *gin.Context) {
 		return
 	}
 
-	err = s.app.DeleteUser(c.Request.Context(), id)
+	err = s.service.DeleteUser(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return

@@ -1,4 +1,4 @@
-package handler
+package server
 
 import (
 	"net/http"
@@ -14,7 +14,7 @@ func (s *server) createDepartment(c *gin.Context) {
 		return
 	}
 
-	id, err := s.app.CreateDepartment(c.Request.Context(), d)
+	id, err := s.service.CreateDepartment(c.Request.Context(), d)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -29,7 +29,7 @@ func (s *server) getDepartmentByID(c *gin.Context) {
 		return
 	}
 
-	department, err := s.app.GetDepartmentByID(c.Request.Context(), id)
+	department, err := s.service.GetDepartmentByID(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -38,7 +38,7 @@ func (s *server) getDepartmentByID(c *gin.Context) {
 }
 
 func (s *server) getAllDepartments(c *gin.Context) {
-	departments, err := s.app.GetAllDepartments(c.Request.Context())
+	departments, err := s.service.GetAllDepartments(c.Request.Context())
 	if err != nil {
 		replyError(c, err)
 		return
@@ -60,7 +60,7 @@ func (s *server) updateDepartment(c *gin.Context) {
 		return
 	}
 
-	err = s.app.UpdateDepartment(c.Request.Context(), d)
+	err = s.service.UpdateDepartment(c.Request.Context(), d)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -75,7 +75,7 @@ func (s *server) deleteDepartment(c *gin.Context) {
 		return
 	}
 
-	err = s.app.DeleteDepartment(c.Request.Context(), id)
+	err = s.service.DeleteDepartment(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return

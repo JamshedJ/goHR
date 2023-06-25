@@ -1,4 +1,4 @@
-package handler
+package server
 
 import (
 	"context"
@@ -10,19 +10,19 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/JamshedJ/goHR/internal/log"
 	"github.com/JamshedJ/goHR/internal/models"
 	"github.com/JamshedJ/goHR/internal/pkg/service"
-	"github.com/JamshedJ/goHR/internal/log"
 	"github.com/gin-gonic/gin"
 )
 
 type server struct {
-	app *service.App
+	service *service.Service
 }
 
-func Run(ctx context.Context, app *service.App, addr string) error {
+func Run(ctx context.Context, service *service.Service, addr string) error {
 	srv := &server{
-		app: app,
+		service: service,
 	}
 
 	httpServer := &http.Server{

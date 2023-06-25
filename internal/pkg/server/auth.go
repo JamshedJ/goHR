@@ -1,4 +1,4 @@
-package handler
+package server
 
 import (
 	"net/http"
@@ -13,7 +13,7 @@ func (s *server) signUp(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.BadRequest)
 		return
 	}
-	err := s.app.AddUser(c.Request.Context(), u)
+	err := s.service.AddUser(c.Request.Context(), u)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -27,7 +27,7 @@ func (s *server) signIn(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.BadRequest)
 		return
 	}
-	token, err := s.app.GenerateToken(c.Request.Context(), u)
+	token, err := s.service.GenerateToken(c.Request.Context(), u)
 	if err != nil {
 		replyError(c, err)
 		return

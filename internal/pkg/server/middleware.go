@@ -1,4 +1,4 @@
-package handler
+package server
 
 import (
 	"bytes"
@@ -51,7 +51,7 @@ func (s *server) mwUserAuth(c *gin.Context) {
 		return
 	}
 
-	user, err := s.app.ParseToken(headerParts[1])
+	user, err := s.service.ParseToken(headerParts[1])
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Unauthorized)
 		return

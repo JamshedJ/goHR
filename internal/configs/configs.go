@@ -13,8 +13,11 @@ var (
 )
 
 type app struct {
-	URL     string `json:"url"`
-	Version string `json:"version"`
+	URL           string `json:"url"`
+	Version       string `json:"version"`
+	Salt          string `json:"salt"`
+	SignKey       string `json:"sign_key"`
+	TokenTTLHours int    `json:"token_ttl_hours"`
 }
 
 type database struct {

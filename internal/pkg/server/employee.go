@@ -1,4 +1,4 @@
-package handler
+package server
 
 import (
 	"net/http"
@@ -14,7 +14,7 @@ func (s *server) createEmployee(c *gin.Context) {
 		return
 	}
 
-	id, err := s.app.CreateEmployee(c.Request.Context(), e)
+	id, err := s.service.CreateEmployee(c.Request.Context(), e)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -31,7 +31,7 @@ func (s *server) getEmployeeByID(c *gin.Context) {
 
 	_, isAdmin := c.Get("is_admin")
 
-	employee, err := s.app.GetEmployeeByID(c.Request.Context(), id, isAdmin)
+	employee, err := s.service.GetEmployeeByID(c.Request.Context(), id, isAdmin)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -42,7 +42,7 @@ func (s *server) getEmployeeByID(c *gin.Context) {
 func (s *server) getAllEmployees(c *gin.Context) {
 	_, isAdmin := c.Get("is_admin")
 
-	employees, err := s.app.GetAllEmployees(c.Request.Context(), isAdmin)
+	employees, err := s.service.GetAllEmployees(c.Request.Context(), isAdmin)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -63,7 +63,7 @@ func (s *server) updateEmployee(c *gin.Context) {
 		return
 	}
 
-	err = s.app.UpdateEmployee(c.Request.Context(), e)
+	err = s.service.UpdateEmployee(c.Request.Context(), e)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -78,7 +78,7 @@ func (s *server) deleteEmployee(c *gin.Context) {
 		return
 	}
 
-	err = s.app.DeleteEmployee(c.Request.Context(), id)
+	err = s.service.DeleteEmployee(c.Request.Context(), id)
 	if err != nil {
 		replyError(c, err)
 		return
@@ -89,7 +89,7 @@ func (s *server) deleteEmployee(c *gin.Context) {
 func (s *server) searchEmployeeByName(c *gin.Context) {
 	query := c.Query("query")
 
-	employee, err := s.app.SearchEmployeeByName(c.Request.Context(), query)
+	employee, err := s.service.SearchEmployeeByName(c.Request.Context(), query)
 	if err != nil {
 		replyError(c, err)
 		return

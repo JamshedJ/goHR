@@ -3,27 +3,27 @@ package service
 import (
 	"context"
 
-	"github.com/JamshedJ/goHR/internal/models"
 	"github.com/JamshedJ/goHR/internal/log"
+	"github.com/JamshedJ/goHR/internal/models"
 )
 
-func (a *App) CreateEmployeeRequest(ctx context.Context, r models.EmployeeRequest) (id int, err error) {
+func (s *Service) CreateEmployeeRequest(ctx context.Context, r models.EmployeeRequest) (id int, err error) {
 	if !r.Validate() {
 		return 0, models.ErrBadRequest
 	}
 
-	id, err = a.db.CreateEmployeeRequest(ctx, r)
+	id, err = s.db.CreateEmployeeRequest(ctx, r)
 	if err != nil {
 		log.Error.Println("app CreateEmployeeRequest", err)
 	}
 	return
 }
 
-func (a *App) GetEmployeeRequestByID(ctx context.Context, id int) (request models.EmployeeRequest, err error) {
+func (s *Service) GetEmployeeRequestByID(ctx context.Context, id int) (request models.EmployeeRequest, err error) {
 	if id <= 0 {
 		return request, models.ErrBadRequest
 	}
-	request, err = a.db.GetRequestByID(ctx, id)
+	request, err = s.db.GetRequestByID(ctx, id)
 	if err != nil {
 		if err != models.ErrNoRows {
 			log.Error.Println("app GetEmployeeRequestByID", err)
@@ -32,8 +32,8 @@ func (a *App) GetEmployeeRequestByID(ctx context.Context, id int) (request model
 	return
 }
 
-func (a *App) GetAllEmployeeRequests(ctx context.Context) (requests []models.EmployeeRequest, err error) {
-	requests, err = a.db.GetAllRequests(ctx)
+func (s *Service) GetAllEmployeeRequests(ctx context.Context) (requests []models.EmployeeRequest, err error) {
+	requests, err = s.db.GetAllRequests(ctx)
 	if err != nil {
 		if err != models.ErrNoRows {
 			log.Error.Println("app GetRequests", err)
@@ -42,23 +42,23 @@ func (a *App) GetAllEmployeeRequests(ctx context.Context) (requests []models.Emp
 	return
 }
 
-func (a *App) UpdateEmployeeRequest(ctx context.Context, r models.EmployeeRequest) (err error) {
+func (s *Service) UpdateEmployeeRequest(ctx context.Context, r models.EmployeeRequest) (err error) {
 	if !r.Validate() {
 		return models.ErrBadRequest
 	}
-	err = a.db.UpdateEmployeeRequest(ctx, r)
+	err = s.db.UpdateEmployeeRequest(ctx, r)
 	if err != nil {
 		log.Error.Println("app UpdateEmployeeRequest", err)
 	}
 	return
 }
 
-func (a *App) DeleteEmployeeRequest(ctx context.Context, id int) (err error) {
+func (s *Service) DeleteEmployeeRequest(ctx context.Context, id int) (err error) {
 	if id <= 0 {
 		return models.ErrBadRequest
 	}
 
-	err = a.db.DeleteRequest(ctx, id)
+	err = s.db.DeleteRequest(ctx, id)
 	if err != nil {
 		log.Error.Println("app DeleteEmployeeRequest", err)
 	}
