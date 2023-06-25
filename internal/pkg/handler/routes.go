@@ -7,6 +7,7 @@ import (
 func (s *server) initRoutes() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
+	router.Use(mwLogRequests)
 
 	auth := router.Group("/auth")
 	{

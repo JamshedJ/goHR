@@ -1,12 +1,37 @@
 package handler
 
 import (
+	"bytes"
+	"io"
 	"net/http"
 	"strings"
 
+	"github.com/JamshedJ/goHR/internal/log"
 	"github.com/JamshedJ/goHR/internal/models"
 	"github.com/gin-gonic/gin"
 )
+
+type bodyLogWriter struct {
+	gin.ResponseWriter
+	body *bytes.Buffer
+}
+
+func (w bodyLogWriter) Write(b []byte) (int, error) {
+	w.body.Write(b)
+	return w.ResponseWriter.Write(b)
+}
+
+func mwLogRequests(c *gin.Context) {
+	requestBody, _ := io.ReadAll(c.Request.Body)
+	c.Request.Body = io.NopCloser(bytes.NewReader(requestBody))
+
+	responseWriter := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
+	c.Writer = responseWriter
+
+	log.Debug.Printf("Request: %s", requestBody)
+	c.Next()
+	log.Debug.Printf("Response: %s", responseWriter.body.Bytes())
+}
 
 func (s *server) mwUserAuth(c *gin.Context) {
 	header := c.GetHeader("Authorization")
