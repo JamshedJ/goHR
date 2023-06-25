@@ -35,13 +35,18 @@ var level map[logLevel]*log.Logger
 func Init() (err error) {
 	level = make(map[logLevel]*log.Logger)
 
+	foldername := configs.Logger.FolderName
+	if err = os.Mkdir(foldername, 0777); err != nil && err.Error() != "mkdir logs: file exists" {
+		return fmt.Errorf("logger Init: error creating %s directory: %w", foldername, err)
+	}
+
 	for l, fileName := range map[logLevel]string{
-		Debug:   configs.AppSettings.AppParams.LogDebug,
-		Info:    configs.AppSettings.AppParams.LogInfo,
-		Warning: configs.AppSettings.AppParams.LogWarning,
-		Error:   configs.AppSettings.AppParams.LogError,
+		Debug:   configs.Logger.FileDebug,
+		Info:    configs.Logger.FileInfo,
+		Warning: configs.Logger.FileWarning,
+		Error:   configs.Logger.FileError,
 	} {
-		if err = setLevelOutput(l, fileName); err != nil {
+		if err = setLevelOutput(l, foldername+"/"+fileName); err != nil {
 			return fmt.Errorf("logger Init: error setting logger output for %q level: %w", l, err)
 		}
 	}
@@ -49,17 +54,17 @@ func Init() (err error) {
 }
 
 func setLevelOutput(l logLevel, fileName string) (err error) {
-	_, err = os.OpenFile(fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	_, err = os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err != nil {
 		return
 	}
 
 	lumberjackLogger := &lumberjack.Logger{
 		Filename:   fileName,
-		MaxSize:    configs.AppSettings.AppParams.LogMaxSize, // megabytes
-		MaxBackups: configs.AppSettings.AppParams.LogMaxBackups,
-		MaxAge:     configs.AppSettings.AppParams.LogMaxAge,   // days
-		Compress:   configs.AppSettings.AppParams.LogCompress, // disabled by default
+		MaxSize:    configs.Logger.MaxSizeMB,
+		MaxBackups: configs.Logger.MaxBackups,
+		MaxAge:     configs.Logger.MaxAgeDays,
+		Compress:   configs.Logger.Compress,
 		LocalTime:  true,
 	}
 

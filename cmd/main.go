@@ -11,8 +11,9 @@ import (
 )
 
 func main() {
-	configs.PutAdditionalSettings()
-
+	if err := configs.Init(); err != nil {
+		panic(err)
+	}
 	if err := log.Init(); err != nil {
 		panic(err)
 	}
@@ -22,7 +23,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	db := repository.New(ctx, "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable")
+	db := repository.New(ctx)
 	defer db.Close(ctx)
 
 	if err := db.Up(ctx); err != nil {
@@ -36,7 +37,7 @@ func main() {
 
 	app := service.New(db)
 
-	if err := handler.Run(ctx, app, ":8080"); err != nil {
+	if err := handler.Run(ctx, app, configs.App.URL); err != nil {
 		log.Error.Fatal(err)
 	}
 
