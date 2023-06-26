@@ -23,7 +23,7 @@ func (d *DB) GetEmployeeByID(ctx context.Context, id int) (e models.Employee, er
 			last_name,
 			position_id,
 			department_id,
-			employment_date,
+			TO_CHAR(employment_date, 'YYYY-MM-DD HH24:MI:SS'),
 			salary
 		FROM employees
 		WHERE id = $1;`, id).Scan(
@@ -48,7 +48,7 @@ func (d *DB) GetAllEmployees(ctx context.Context) (employees []models.Employee, 
 			last_name,
 			position_id,
 			department_id,
-			employment_date,
+			TO_CHAR(employment_date, 'YYYY-MM-DD HH24:MI:SS'),
 			salary
 		FROM employees;`)
 	if err != nil {
@@ -112,7 +112,15 @@ func (d *DB) DeleteEmployee(ctx context.Context, id int) (err error) {
 }
 
 func (d *DB) SearchEmployeeByName(ctx context.Context, query string) (employees []models.Employee, err error) {
-	rows, err := d.conn.Query(ctx, `SELECT * FROM employees WHERE first_name ILIKE '%' || $1 || '%'`, query)
+	rows, err := d.conn.Query(ctx, `SELECT
+			id,
+			first_name,
+			last_name,
+			position_id,
+			department_id,
+			TO_CHAR(employment_date, 'YYYY-MM-DD HH24:MI:SS'),
+			salary
+		FROM employees WHERE first_name ILIKE '%' || $1 || '%';`, query)
 	if err != nil {
 		return
 	}

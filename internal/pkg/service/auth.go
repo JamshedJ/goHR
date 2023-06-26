@@ -10,10 +10,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-//var (
-//	salt       = configs.App.Salt
-//)
-
 func (s *Service) GenerateToken(ctx context.Context, u models.User) (string, error) {
 
 	if err := u.Validate(); err != nil {

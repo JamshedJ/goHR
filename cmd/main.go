@@ -30,10 +30,10 @@ func main() {
 		log.Error.Fatal("Error while migrating tables: ", err)
 	}
 
-	// if err := db.Down(ctx); err != nil {
-	// 	log.Error.Fatal("Error while dropping tables: ", err)
-	// 	return
-	// }
+	//if err := db.Down(ctx); err != nil {
+	//	log.Error.Fatal("Error while dropping tables: ", err)
+	//	return
+	//}
 
 	app := service.New(db)
 
